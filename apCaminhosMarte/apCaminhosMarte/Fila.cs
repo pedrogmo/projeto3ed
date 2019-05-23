@@ -41,7 +41,7 @@ namespace apCaminhosMarte
             }
         }
 
-        protected No<T> inicio, fim, atual;
+        protected No<T> inicio, fim;
         protected int qtd;
 
         public Fila()
