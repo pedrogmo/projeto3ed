@@ -126,7 +126,7 @@ namespace apCaminhosMarte
             else
                 Inserir(novoNo, raiz);
         }
-        public void Excluir(T dado)
+        /*public void Excluir(T dado)
         {
             if (EstaVazia)
                 throw new Exception("Árvore vazia");
@@ -192,7 +192,61 @@ namespace apCaminhosMarte
                     antecessor.Info = info;
                 }
             }
-        }
+        }*/
+
+        public void Excluir(T info)
+        {           
+            void Excluir(No<T> atual, No<T> anterior)
+            {
+                T MaiorExcluir(No<T> ant, No<T> atu)
+                {
+                    if (atu.Direito == null)
+                    {
+                        ant.Direito = atu.Esquerdo;
+                        return atu.Info;
+                    }
+                    return (MaiorExcluir(atu, atu.Direito));
+                }
+
+                int comparacao = info.CompareTo(atual.Info);
+                int comparacao2 = atual.Info.CompareTo(anterior.Info);
+                if (comparacao == 0) //achou nó
+                {
+                    if (atual.EhFolha())
+                    {
+                        if (comparacao2 > 0)
+                            anterior.Direito = null;
+                        else
+                            anterior.Esquerdo = null;
+                    }
+                    else
+                    {
+                        if (atual.Esquerdo != null && atual.Direito != null)
+                            atual.Info = MaiorExcluir(atual, atual.Esquerdo);
+                        else if (atual.Esquerdo != null)
+                        {
+                            if (comparacao2 > 0)
+                                anterior.Direito = atual.Esquerdo;
+                            else
+                                anterior.Esquerdo = atual.Esquerdo;
+                        }
+                        else
+                        {
+                            if (comparacao2 > 0)
+                                anterior.Direito = atual.Direito;
+                            else
+                                anterior.Esquerdo = atual.Direito;
+                        }
+                    }
+                }
+                else if (comparacao > 0)
+                    Excluir(atual.Direito, atual);
+                else
+                    Excluir(atual.Esquerdo, atual);
+            }
+            Excluir(raiz, raiz);
+        }        
+
         public T Menor()
         {
             if (EstaVazia)
