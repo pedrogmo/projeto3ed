@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace apCaminhosMarte
 {
     class Fila<T> : IQueue<T>
     {
-        protected class No<X>
+        internal class No<X>
         {
             protected X info;
             protected No<X> prox;
@@ -40,7 +41,7 @@ namespace apCaminhosMarte
             }
         }
 
-        protected No<T> inicio, fim;
+        protected No<T> inicio, fim, atual;
         protected int qtd;
 
         public Fila()
@@ -48,7 +49,23 @@ namespace apCaminhosMarte
             inicio = fim = null;
             qtd = 0;
         }
-
+        public Fila(T dado)
+        {
+            qtd = 1;
+            Enfileirar(dado);
+        }
+        public Fila(T[] array)
+        {
+            qtd = array.Length;
+            for (int i = 0; i < qtd; i++)
+                Enfileirar(array[i]);
+        }
+        public Fila(IEnumerable<T> lista)
+        {
+            qtd = lista.Count();
+            foreach (T dado in lista)
+                Enfileirar(dado);
+        }
         public int Tamanho { get => qtd; }
 
         public bool EstaVazia()
@@ -78,19 +95,24 @@ namespace apCaminhosMarte
             qtd--;
             return ret;
         }
-
-        public T Inicio()
+        public T Inicio
         {
-            if (EstaVazia())
-                throw new FilaVaziaException("Fila vazia");
-            return inicio.Info;
+            get
+            {
+                if (EstaVazia())
+                    throw new FilaVaziaException("Fila vazia");
+                return inicio.Info;
+            }
         }
 
-        public T Fim()
+        public T Fim
         {
-            if (EstaVazia())
-                throw new FilaVaziaException("Fila vazia");
-            return fim.Info;
+            get
+            {
+                if (EstaVazia())
+                    throw new FilaVaziaException("Fila vazia");
+                return fim.Info;
+            }
         }
     }
 }
