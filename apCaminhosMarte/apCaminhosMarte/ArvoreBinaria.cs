@@ -2,24 +2,32 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace apArvore
+namespace apCaminhosMarte
 {
     //Felipe Scherer Vicentin (18178)
     //Pedro Gomes Moreira (18174)
-    class ArvoreBinaria<X> where X : IComparable<X>
+    class ArvoreBinaria<T> where T : IComparable<T>
     {
-        protected internal class No<X> where X : IComparable<X>
+        public class No<X> where X : IComparable<X>
         {
             protected X info;
             protected No<X> esquerdo, direito;
-
             public No(X i, No<X> e, No<X> d)
             {
                 Info = i;
                 Esquerdo = e;
                 Direito = d;
             }
-
+            public No()
+            {
+                esquerdo = direito = null;
+                info = default(X);
+            }
+            public No(X i)
+            {
+                esquerdo = direito = null;
+                info = i;
+            }
             public X Info
             {
                 get => info;
@@ -30,29 +38,40 @@ namespace apArvore
                     info = value;
                 }
             }
-
             public No<X> Esquerdo
             {
                 get => esquerdo;
                 set => esquerdo = value;
             }
-
             public No<X> Direito
             {
                 get => direito;
                 set => direito = value;
             }
-
             public bool EhFolha()
             {
                 return esquerdo == null && direito == null;
             }
-
+            public override string ToString()
+            {
+                return $"({esquerdo.info.ToString()}){info.ToString()}({direito.info.ToString()})";
+            }
+            public override bool Equals(object obj)
+            {
+                return (obj is No<X>) && ((No<X>)obj).info.Equals(info);
+            }
+            public override int GetHashCode()
+            {
+                var hashCode = 103569061;
+                hashCode = hashCode * -1521134295 + EqualityComparer<X>.Default.GetHashCode(info);
+                hashCode = hashCode * -1521134295 + EqualityComparer<No<X>>.Default.GetHashCode(esquerdo);
+                hashCode = hashCode * -1521134295 + EqualityComparer<No<X>>.Default.GetHashCode(direito);
+                return hashCode;
+            }
             public static bool operator !=(No<X> um, No<X> outro)
             {
                 return !(um == outro);
             }
-
             public static bool operator ==(No<X> um, No<X> outro)
             {
                 if (um is null && outro is null)
@@ -62,12 +81,30 @@ namespace apArvore
                 return um.info.CompareTo(outro.info) == 0;
             }
         }
-
-        protected No<X> raiz;
+        protected No<T> raiz;
+        public T Raiz { get => raiz.Info; }
 
         public ArvoreBinaria()
         {
             raiz = null;
+        }
+        public ArvoreBinaria(T info)
+        {
+            raiz = new No<T>(info);
+        }
+        public ArvoreBinaria(ArvoreBinaria<T> outra)
+        {
+            raiz = outra.raiz;
+        }
+        public ArvoreBinaria(T[] v)
+        {
+            foreach (T t in v)
+                Inserir(t);
+        }
+        public ArvoreBinaria(IEnumerable<T> l)
+        {
+            foreach (T t in l)
+                Inserir(t);
         }
 
         public bool EstaVazia
@@ -75,320 +112,178 @@ namespace apArvore
             get => raiz == null;
         }
 
-        public void Inserir(X dado)
+        public void Inserir(T dado)
         {
-            No<X> novoNo = new No<X>(dado, null, null);
+            void Inserir(No<T> novo, No<T> anterior)
+            {
+                int comparacao = novo.Info.CompareTo(anterior.Info);
+                if (comparacao < 0)
+                {
+                    if (anterior.Esquerdo == null)
+                        anterior.Esquerdo = novo;
+                    else
+                        Inserir(novo, anterior.Esquerdo);
+                }
+                else if (comparacao > 0)
+                {
+                    if (anterior.Direito == null)
+                        anterior.Direito = novo;
+                    else
+                        Inserir(novo, anterior.Direito);
+                }
+            }
+            No<T> novoNo = new No<T>(dado);
             if (EstaVazia)
                 raiz = novoNo;
             else
                 Inserir(novoNo, raiz);
         }
-
-        protected void Inserir(No<X> novo, No<X> anterior)
-        {
-            int comparacao = novo.Info.CompareTo(anterior.Info);
-            if (comparacao < 0)
-            {
-                if (anterior.Esquerdo == null)
-                    anterior.Esquerdo = novo;
-                else
-                    Inserir(novo, anterior.Esquerdo);
-            }
-            else if (comparacao > 0)
-            {
-                if (anterior.Direito == null)
-                    anterior.Direito = novo;
-                else
-                    Inserir(novo, anterior.Direito);
-            }
-        }
-
-        public void Excluir(X dado)
+        public void Excluir(T dado)
         {
             if (EstaVazia)
                 throw new Exception("Árvore vazia");
-            Excluir(dado, raiz, raiz);
-        }
-
-        protected void Excluir(X info, No<X> atual, No<X> anterior)
-        {
-            int comparacao = info.CompareTo(atual.Info);
-            int comparacao2 = atual.Info.CompareTo(anterior.Info);
-            if (comparacao == 0) //achou nó
+            No<T> BuscarNoAntecessor(T dadoAtual)
             {
-                if (atual.EhFolha())
+                No<T> noAtual = null, anterior = null;
+                if (!EstaVazia)
                 {
-                    if (comparacao2 > 0)
-                        anterior.Direito = null;
-                    else
-                        anterior.Esquerdo = null;
-                }
-                else
-                {
-                    if (atual.Esquerdo != null && atual.Direito != null)
-                        atual.Info = MaiorExcluir(atual, atual.Esquerdo);
-                    else if (atual.Esquerdo != null)
+                    noAtual = raiz;
+                    while (noAtual != null && noAtual.Info.CompareTo(dado) != 0)
                     {
-                        if (comparacao2 > 0)
-                            anterior.Direito = atual.Esquerdo;
+                        if (dado.CompareTo(noAtual.Info) < 0)
+                        {
+                            anterior = noAtual;
+                            noAtual = noAtual.Esquerdo;
+                        }
+                        else if (dado.CompareTo(noAtual.Info) > 0)
+                        {
+                            anterior = noAtual;
+                            noAtual = noAtual.Direito;
+                        }
                         else
-                            anterior.Esquerdo = atual.Esquerdo;
+                            return anterior;
+                    }
+                }
+                return anterior;
+            }
+            No<T> antecessor = BuscarNoAntecessor(dado);
+            if (antecessor != null)
+            {
+                No<T> atual = null;
+                if (antecessor.Esquerdo.Info.Equals(dado))
+                    atual = antecessor.Esquerdo;
+                else
+                    atual = antecessor.Direito;
+                if (atual.Esquerdo == null || atual.Direito == null)
+                {
+                    if (atual.Info.CompareTo(antecessor.Info) > 0)
+                    {
+                        if (atual.Esquerdo != null)
+                            antecessor.Direito = atual.Esquerdo;
+                        else if (atual.Direito != null)
+                            antecessor.Direito = atual.Direito;
+                        else
+                            antecessor.Direito = null;
                     }
                     else
                     {
-                        if (comparacao2 > 0)
-                            anterior.Direito = atual.Direito;
+                        if (atual.Esquerdo != null)
+                            antecessor.Esquerdo = atual.Esquerdo;
+                        else if (atual.Direito != null)
+                            antecessor.Esquerdo = atual.Direito;
                         else
-                            anterior.Esquerdo = atual.Direito;
+                            antecessor.Esquerdo = null;
                     }
                 }
+                else
+                {
+                    No<T> aux = antecessor.Esquerdo;
+                    while (aux != null && aux.Direito.Direito != null) aux = aux.Direito;
+                    T info = aux.Direito.Info;
+                    aux.Direito = null;
+                    antecessor.Info = info;
+                }
             }
-            else if (comparacao > 0)
-                Excluir(info, atual.Direito, atual);
-            else
-                Excluir(info, atual.Esquerdo, atual);
+        }
+        public void Alterar(T dado)
+        {
+            Excluir(dado);
+            Inserir(dado);
         }
 
-        public X Menor()
+        public T Menor
         {
-            if (EstaVazia)
-                throw new Exception("Árvore vazia");
-            return Menor(raiz);
-        }
-        public X Maior()
-        {
-            if (EstaVazia)
-                throw new Exception("Árvore vazia");
-            return Maior(raiz);
-        }
-
-        protected X Menor(No<X> atual)
-        {
-            if (atual.Esquerdo == null)
-                return atual.Info;
-            return Menor(atual.Esquerdo);
-        }
-
-        protected X Maior(No<X> atual)
-        {
-            if (atual.Direito == null)
-                return atual.Info;
-            return (Maior(atual.Direito));
-        }
-
-        protected X MaiorExcluir(No<X> anterior, No<X> atual)
-        {
-            if (atual.Direito == null)
+            get
             {
-                anterior.Direito = atual.Esquerdo;
-                return atual.Info;
+                if (EstaVazia)
+                    throw new Exception("Árvore vazia");
+                T MenorNo(No<T> atual)
+                {
+                    if (atual.Esquerdo == null)
+                        return atual.Info;
+                    return MenorNo(atual.Esquerdo);
+                }
+                return MenorNo(raiz);
             }
-            return (MaiorExcluir(atual, atual.Direito));
         }
-
-
-        public void PreOrdem(Action<X> callback)
+        public T Maior
         {
-            if (EstaVazia)
-                Console.WriteLine("Árvore vazia");
-            else
-                PreOrdem(raiz, callback);
-        }
-
-        protected void PreOrdem(No<X> atual, Action<X> callback)
-        {
-            if (atual != null)
+            get
             {
-                callback(atual.Info);
-                PreOrdem(atual.Esquerdo, callback);
-                PreOrdem(atual.Direito, callback);
+                if (EstaVazia)
+                    throw new Exception("Árvore vazia");
+                T MaiorNo(No<T> atual)
+                {
+                    if (atual.Direito == null)
+                        return atual.Info;
+                    return (MaiorNo(atual.Direito));
+                }
+                return MaiorNo(raiz);
             }
         }
 
-        public void InOrdem(Action<X> callback)
+        public void PreOrdem(Action<T> callback)
         {
-            if (EstaVazia)
-                Console.WriteLine("Árvore vazia");
-            else
-                InOrdem(raiz, callback);
-        }
-
-        protected void InOrdem(No<X> atual, Action<X> callback)
-        {
-            if (atual != null)
-            {                
-                InOrdem(atual.Esquerdo, callback);
-                callback(atual.Info);
-                InOrdem(atual.Direito, callback);
-            }
-        }
-
-        public void PosOrdem(Action<X> callback)
-        {
-            if (EstaVazia)
-                Console.WriteLine("Árvore vazia");
-            else
-                PosOrdem(raiz, callback);
-        }
-
-        protected void PosOrdem(No<X> atual, Action<X> callback)
-        {
-            if (atual != null)
+            void PreOrdem(No<T> atual)
             {
-                PosOrdem(atual.Esquerdo, callback);
-                PosOrdem(atual.Direito, callback);
-                callback(atual.Info);
+                if (atual != null)
+                {
+                    callback(atual.Info);
+                    PreOrdem(atual.Esquerdo);
+                    PreOrdem(atual.Direito);
+                }
             }
+            PreOrdem(raiz);
         }
-
-        public X Buscar(X dado)
+        public void InOrdem(Action<T> callback)
         {
-            return Buscar(dado, raiz);
-        }
-
-        protected X Buscar(X dado, No<X> atual)
-        {
-            if (atual == null)
-                return default(X);
-            if (dado.CompareTo(atual.Info) < 0)
-                return Buscar(dado, atual.Esquerdo);
-            else if (dado.CompareTo(atual.Info) > 0)
-                return Buscar(dado, atual.Direito);
-            return atual.Info; //aqui é igual
-        }
-
-        //exercício 1
-        public override bool Equals(object obj)
-        {
-            if (this == obj) return true;
-            if (obj == null) return false;
-            ArvoreBinaria<X> a = (ArvoreBinaria<X>)obj;
-            return ArvoreIgual(raiz, a.raiz);
-        }
-
-        protected bool ArvoreIgual(No<X> a, No<X> b)
-        {
-            if (a == null && b == null)
-                return true;
-            if (a != b)
-                return false;
-            return ArvoreIgual(a.Esquerdo, b.Esquerdo) && ArvoreIgual(a.Direito, b.Direito);
-        }
-
-        //exercício 2
-        public int Quantidade()
-        {
-            return Contar(raiz);
-        }
-
-        protected int Contar(No<X> atual)
-        {
-            if (atual == null)
-                return 0;
-            //nó raíz é tratado previamente -> préordem
-            return 1 + Contar(atual.Esquerdo) + Contar(atual.Direito);
-        }
-
-        //exercício 3
-        public int QuantidadeFolhas()
-        {
-            return ContarFolhas(raiz);         
-        }
-
-        protected int ContarFolhas(No<X> atual)
-        {
-            if (atual == null)
-                return 0;
-            if (atual.EhFolha())
-                return 1;
-            return ContarFolhas(atual.Esquerdo) + ContarFolhas(atual.Direito);
-        }
-
-        //exercício 4
-        public bool EstritamenteBinaria()
-            //não tem nós unários
-            //todo nó que não é folha tem dois filhos
-        {
-            if (EstaVazia)
-                return false;
-            return DoisFilhos(raiz);
-        }
-
-        protected bool DoisFilhos(No<X> atual)
-        {
-            if (atual.Esquerdo != null && atual.Direito != null)
-                return DoisFilhos(atual.Esquerdo) && DoisFilhos(atual.Direito);
-            if (atual.EhFolha())
-                return true;
-            return false;
-        }
-
-        //exercício 5
-        public int Altura()
-        {
-            return ContarAltura(raiz);
-        }
-
-        protected int ContarAltura(No<X> atual)
-        {
-            //a altura de uma árvore é a maior dentre a altura da esquerda e da direita
-            int alturaEsquerda, alturaDireita;
-            if (atual == null)
-                return 0;
-            alturaEsquerda = ContarAltura(atual.Esquerdo);
-            alturaDireita = ContarAltura(atual.Direito);
-            if (alturaEsquerda >= alturaDireita)
-                return 1 + alturaEsquerda;
-            return 1 + alturaDireita;
-        }
-
-        //exercício 6
-        public void EscreverEstrutura()
-        {
-            EscreverNo(raiz);
-        }
-
-        protected void EscreverNo(No<X> atual)
-        {
-            if (atual == null)
-                Console.Write("()");
-            else
+            void InOrdem(No<T> atual)
             {
-                Console.Write("(" + atual.Info + ":");
-                EscreverNo(atual.Esquerdo);
-                Console.Write(",");
-                EscreverNo(atual.Direito);
-                Console.Write(")");
+                if (atual != null)
+                {
+                    InOrdem(atual.Esquerdo);
+                    callback(atual.Info);
+                    InOrdem(atual.Direito);
+                }
             }
+            InOrdem(raiz);
         }
-
-        //exercício 7
-        public void Espelhar() 
-            //retira ordenação da árvore
+        public void PosOrdem(Action<T> callback)
         {
-            Trocar(raiz);
-        }
-
-        protected void Trocar(No<X> noAtual)
-        {
-            No<X> auxiliar;
-            if (noAtual != null)
+            void PosOrdem(No<T> atual)
             {
-                //troca esquerdo com direito:
-                auxiliar = noAtual.Esquerdo;
-                noAtual.Esquerdo = noAtual.Direito;
-                noAtual.Direito = auxiliar;
-
-                //chama função para esquerdo e direito
-                Trocar(noAtual.Esquerdo);
-                Trocar(noAtual.Direito);
+                if (atual != null)
+                {
+                    PosOrdem(atual.Esquerdo);
+                    PosOrdem(atual.Direito);
+                    callback(atual.Info);
+                }
             }
+            PosOrdem(raiz);
         }
-
-        //exercício 8
-        public void EscrevePorNiveis()
+        public void PorNivel(Action<T> callback)
         {
-            FilaLista<No<X>> umaFila = new FilaLista<No<X>>();
+            Fila<No<T>> umaFila = new Fila<No<T>>();
             var noAtual = raiz;
             while (noAtual != null)
             {
@@ -396,7 +291,7 @@ namespace apArvore
                     umaFila.Enfileirar(noAtual.Esquerdo);
                 if (noAtual.Direito != null)
                     umaFila.Enfileirar(noAtual.Direito);
-                Console.WriteLine(noAtual.Info);
+                callback(noAtual.Info);
                 if (umaFila.EstaVazia())
                     noAtual = null;
                 else
@@ -404,48 +299,135 @@ namespace apArvore
             }
         }
 
-        //exercício 9
-        public int Largura()
+        public T Buscar(T dado)
         {
-            int[] nosPorNivel = new int[1000];
-            for (int i = 0; i < 1000; i++)
-                nosPorNivel[i] = 0;
-            ContarLargura(raiz, ref nosPorNivel, 0);
-            return Metodos.Maior(nosPorNivel);
+            return BuscarNo(dado).Info;
         }
-
-        protected void ContarLargura(No<X> atual, ref int[] v, int h)
+        protected No<T> BuscarNo(T dado)
         {
-            if (atual != null)
+            No<T> atual = null;
+            if (!EstaVazia)
             {
-                ++v[h];
-                ContarLargura(atual.Esquerdo, ref v, h + 1);
-                ContarLargura(atual.Direito, ref v, h + 1);
+                atual = raiz;
+                while (atual != null && atual.Info.CompareTo(dado) != 0)
+                {
+                    if (dado.CompareTo(atual.Info) < 0)
+                        atual = atual.Esquerdo;
+                    else if (dado.CompareTo(atual.Info) > 0)
+                        atual = atual.Direito;
+                    else
+                        return atual;
+                }
+            }
+            return atual;
+        }
+        public int Tamanho
+        {
+            get
+            {
+                int Contar(No<T> atual)
+                {
+                    if (atual == null)
+                        return 0;
+                    //nó raíz é tratado previamente -> préordem
+                    return 1 + Contar(atual.Esquerdo) + Contar(atual.Direito);
+                }
+                return Contar(raiz);
             }
         }
-
-        //exercício 10
-        public void EscreverAntecessores(X dado)
+        public int QuantidadeFolhas
         {
-            bool achou = false;
-            EscreverAntecessor(raiz, dado, ref achou);
-            if (!achou)
-                Console.WriteLine("Dado não foi achado");
-        }
-
-        protected void EscreverAntecessor(No<X> atual, X dado, ref bool achou)
-        {
-            if (atual != null)
+            get
             {
-                if (!achou)
-                    EscreverAntecessor(atual.Esquerdo, dado, ref achou);
-                if (!achou)
-                    EscreverAntecessor(atual.Direito, dado, ref achou);
-                if (atual.Info.CompareTo(dado) == 0)
-                    achou = true;
-                if (achou)
-                    Console.WriteLine(atual.Info);
+                int ContarFolhas(No<T> atual)
+                {
+                    if (atual == null)
+                        return 0;
+                    if (atual.EhFolha())
+                        return 1;
+                    return ContarFolhas(atual.Esquerdo) + ContarFolhas(atual.Direito);
+                }
+                return ContarFolhas(raiz);
             }
         }
+        public int Altura
+        {
+            get
+            {
+                int ContarAltura(No<T> atual)
+                {
+                    //a altura de uma árvore é a maior dentre a altura da esquerda e da direita
+                    int alturaEsquerda, alturaDireita;
+                    if (atual == null)
+                        return 0;
+                    alturaEsquerda = ContarAltura(atual.Esquerdo);
+                    alturaDireita = ContarAltura(atual.Direito);
+                    if (alturaEsquerda >= alturaDireita)
+                        return 1 + alturaEsquerda;
+                    return 1 + alturaDireita;
+                }
+                return ContarAltura(raiz);
+            }
+        }
+        public override bool Equals(object obj)
+        {
+            if (this == obj) return true;
+            if (obj == null) return false;
+            ArvoreBinaria<T> arvore = obj as ArvoreBinaria<T>;
+            bool ArvoreIgual(No<T> a, No<T> b)
+            {
+                if (a == null && b == null)
+                    return true;
+                if (a != b)
+                    return false;
+                return ArvoreIgual(a.Esquerdo, b.Esquerdo) && ArvoreIgual(a.Direito, b.Direito);
+            }
+            return ArvoreIgual(raiz, arvore.raiz);
+        }
+        public override string ToString()
+        {
+            string EscreverNo(No<T> atual)
+            {
+                if (atual == null)
+                    return "";
+                else
+                    return $"({EscreverNo(atual.Esquerdo)}){atual.Info.ToString()}({EscreverNo(atual.Direito)})";
+            }
+            return EscreverNo(raiz);
+        }
+        public override int GetHashCode()
+        {
+            return 1665885351 + EqualityComparer<No<T>>.Default.GetHashCode(raiz);
+        }
+        /*protected bool DoisFilhos(No<T> atual)
+        {
+           if (atual.Esquerdo != null && atual.Direito != null)
+               return DoisFilhos(atual.Esquerdo) && DoisFilhos(atual.Direito);
+           if (atual.EhFolha())
+               return true;
+           return false;
+        }
+        public void EscreverAntecessores(T dado)
+        {
+           bool achou = false;
+           EscreverAntecessor(raiz, dado, ref achou);
+           if (!achou)
+               Console.WriteLine("Dado não foi achado");
+        }
+        protected T EscreverAntecessor(No<T> atual, T dado, ref bool achou)
+        {
+           if (atual != null)
+           {
+               if (!achou)
+                   EscreverAntecessor(atual.Esquerdo, dado, ref achou);
+               if (!achou)
+                   EscreverAntecessor(atual.Direito, dado, ref achou);
+               if (atual.Info.CompareTo(dado) == 0)
+                   achou = true;
+               if (achou)
+                   return atual.Info;
+           }
+           return default(T);
+        }*/
     }
 }

@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace apCaminhosMarte
 {
@@ -21,10 +19,8 @@ namespace apCaminhosMarte
                 Info = i;
                 Prox = p;
             }
-
             public No(X i) : this(i, null)
             { }
-
             public X Info
             {
                 get => info;
@@ -35,7 +31,6 @@ namespace apCaminhosMarte
                     info = value;
                 }
             }
-
             public No<X> Prox
             {
                 get => prox;
@@ -45,7 +40,6 @@ namespace apCaminhosMarte
 
         protected No<T> inicio, fim;
         protected int qtd;
-
         public Fila()
         {
             inicio = fim = null;
@@ -69,12 +63,10 @@ namespace apCaminhosMarte
                 Enfileirar(dado);
         }
         public int Tamanho { get => qtd; }
-
         public bool EstaVazia()
         {
             return inicio == null;
         }
-
         public void Enfileirar(T dado)
         {
             No<T> no = new No<T>(dado, null);
@@ -85,7 +77,6 @@ namespace apCaminhosMarte
             fim = no;
             qtd++;
         }
-
         public T Retirar()
         {
             if (EstaVazia())
@@ -106,7 +97,6 @@ namespace apCaminhosMarte
                 return inicio.Info;
             }
         }
-
         public T Fim
         {
             get
