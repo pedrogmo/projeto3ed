@@ -158,7 +158,7 @@ namespace apCaminhosMarte
             if (antecessor != null)
             {
                 No<T> atual = null;
-                if (antecessor.Esquerdo.Info.Equals(dado))
+                if (antecessor.Esquerdo.Info.CompareTo(dado) == 0)
                     atual = antecessor.Esquerdo;
                 else
                     atual = antecessor.Direito;
@@ -373,10 +373,6 @@ namespace apCaminhosMarte
                     return $"({EscreverNo(atual.Esquerdo)}){atual.Info.ToString()}({EscreverNo(atual.Direito)})";
             }
             return EscreverNo(raiz);
-        }
-        public override int GetHashCode()
-        {
-            return 1665885351 + EqualityComparer<No<T>>.Default.GetHashCode(raiz);
         }
         /*protected bool DoisFilhos(No<T> atual)
         {
