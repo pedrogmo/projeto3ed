@@ -56,18 +56,6 @@ namespace apCaminhosMarte
             {
                 return $"({esquerdo.info.ToString()}){info.ToString()}({direito.info.ToString()})";
             }
-            public override bool Equals(object obj)
-            {
-                return (obj is No<X>) && ((No<X>)obj).info.Equals(info);
-            }
-            public override int GetHashCode()
-            {
-                var hashCode = 103569061;
-                hashCode = hashCode * -1521134295 + EqualityComparer<X>.Default.GetHashCode(info);
-                hashCode = hashCode * -1521134295 + EqualityComparer<No<X>>.Default.GetHashCode(esquerdo);
-                hashCode = hashCode * -1521134295 + EqualityComparer<No<X>>.Default.GetHashCode(direito);
-                return hashCode;
-            }
             public static bool operator !=(No<X> um, No<X> outro)
             {
                 return !(um == outro);
@@ -205,41 +193,29 @@ namespace apCaminhosMarte
                 }
             }
         }
-        public void Alterar(T dado)
+        public T Menor()
         {
-            Excluir(dado);
-            Inserir(dado);
-        }
-
-        public T Menor
-        {
-            get
+            if (EstaVazia)
+                throw new Exception("Árvore vazia");
+            T MenorNo(No<T> atual)
             {
-                if (EstaVazia)
-                    throw new Exception("Árvore vazia");
-                T MenorNo(No<T> atual)
-                {
-                    if (atual.Esquerdo == null)
-                        return atual.Info;
-                    return MenorNo(atual.Esquerdo);
-                }
-                return MenorNo(raiz);
+                if (atual.Esquerdo == null)
+                    return atual.Info;
+                return MenorNo(atual.Esquerdo);
             }
+            return MenorNo(raiz);
         }
-        public T Maior
+        public T Maior()
         {
-            get
+            if (EstaVazia)
+                throw new Exception("Árvore vazia");
+            T MaiorNo(No<T> atual)
             {
-                if (EstaVazia)
-                    throw new Exception("Árvore vazia");
-                T MaiorNo(No<T> atual)
-                {
-                    if (atual.Direito == null)
-                        return atual.Info;
-                    return (MaiorNo(atual.Direito));
-                }
-                return MaiorNo(raiz);
+                if (atual.Direito == null)
+                    return atual.Info;
+                return (MaiorNo(atual.Direito));
             }
+            return MaiorNo(raiz);
         }
 
         public void PreOrdem(Action<T> callback)
@@ -301,7 +277,10 @@ namespace apCaminhosMarte
 
         public T Buscar(T dado)
         {
-            return BuscarNo(dado).Info;
+            var no = BuscarNo(dado);
+            if (no != null)
+                return no.Info;
+            return default(T);
         }
         protected No<T> BuscarNo(T dado)
         {
@@ -309,7 +288,7 @@ namespace apCaminhosMarte
             if (!EstaVazia)
             {
                 atual = raiz;
-                while (atual != null && atual.Info.CompareTo(dado) != 0)
+                while (atual != null)
                 {
                     if (dado.CompareTo(atual.Info) < 0)
                         atual = atual.Esquerdo;
