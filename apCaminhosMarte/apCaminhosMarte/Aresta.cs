@@ -24,8 +24,8 @@ namespace apCaminhosMarte
             this.um = um;
         }
 
-        public int Distancia { get => distancia; set => distancia = value; }
-        public Cidade Um { get => um; set => um = value; }
-        public Cidade Dois { get => dois; set => dois = value; }
+        public int Distancia { get => distancia; }
+        public Cidade Um { get => um; }
+        public Cidade Dois { get => dois; }
     }
 }
