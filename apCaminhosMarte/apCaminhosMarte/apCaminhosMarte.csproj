@@ -47,9 +47,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Aresta.cs" />
     <Compile Include="ArvoreBinaria.cs" />
+    <Compile Include="Caminho.cs" />
     <Compile Include="Cidade.cs" />
-    <Compile Include="Classe.cs" />
     <Compile Include="Fila.cs" />
     <Compile Include="FilaVaziaException.cs" />
     <Compile Include="Form1.cs">
@@ -58,6 +59,7 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Grafo.cs" />
     <Compile Include="IQueue.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
