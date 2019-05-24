@@ -12,6 +12,7 @@ namespace apCaminhosMarte
     {
         int codigo;
         string nome;
+        int x, y;
 
         public int Codigo
         {
@@ -29,14 +30,40 @@ namespace apCaminhosMarte
             get => nome;
             private set
             {
-
+                if (value == null || value == "")
+                    throw new Exception("Nome inválido");
+                nome = value;
             }
         }
 
-        public Cidade(int c, string n)
+        public int X
+        {
+            get => x;
+            set
+            {
+                if (value < 0)
+                    throw new Exception("Coordenada x inválida");
+                x = value;
+            }
+        }
+
+        public int Y
+        {
+            get => y;
+            set
+            {
+                if (value < 0)
+                    throw new Exception("Coordenada y inválida");
+                y = value;
+            }
+        }
+
+        public Cidade(int c, string n, int x, int y)
         {
             Codigo = c;
             Nome = n;
+            X = x;
+            Y = y;
         }
     }
 }
