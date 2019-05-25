@@ -8,12 +8,12 @@ namespace apCaminhosMarte
 {
     //Felipe Scherer Vicentin (18178)
     //Pedro Gomes Moreira (18174)
-    class Grafo
+    interface IStack<Dado>
     {
-        protected int[,] matriz;
-        public Grafo(int[,] m)
-        {
-            matriz = m;
-        }
+        void Empilhar(Dado info);
+        Dado Desempilhar();
+        Dado Topo();
+        int Tamanho { get; }
+        bool EstaVazia();
     }
 }

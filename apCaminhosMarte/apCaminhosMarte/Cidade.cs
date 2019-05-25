@@ -10,9 +10,8 @@ namespace apCaminhosMarte
     //Pedro Gomes Moreira (18174)
     class Cidade
     {
-        int codigo;
-        string nome;
-        int x, y;
+        protected int codigo, x, y;
+        protected string nome;        
 
         public int Codigo
         {

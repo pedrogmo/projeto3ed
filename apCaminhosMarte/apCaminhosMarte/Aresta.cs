@@ -7,25 +7,31 @@ using apCaminhosMarte;
 
 namespace apCaminhosMarte
 {
-    internal class Aresta
+    //Felipe Scherer Vicentin (18178)
+    //Pedro Gomes Moreira (18174)
+    class Aresta
     {
-        protected int distancia/*, preco*/;
+        protected int distancia, preco;
         protected Cidade um, dois;
 
         public Aresta()
         {
-            distancia =/* preco =*/ 0;
+            distancia = preco = 0;
             um = dois = null;
         }
-        public Aresta(int distancia, Cidade dois, Cidade um)
+        public Aresta(Cidade um, Cidade dois, int distancia, int preco)
         {
-            this.distancia = distancia;
-            this.dois = dois;
             this.um = um;
+            this.dois = dois;
+            this.distancia = distancia;
+            this.preco = preco;
         }
-
-        public int Distancia { get => distancia; }
+        
         public Cidade Um { get => um; }
         public Cidade Dois { get => dois; }
+
+        public int Distancia { get => distancia; }
+
+        public int Preco { get => preco; }
     }
 }

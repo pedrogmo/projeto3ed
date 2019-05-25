@@ -8,36 +8,7 @@ namespace apCaminhosMarte
     //Felipe Scherer Vicentin (18178)
     //Pedro Gomes Moreira (18174)
     class Fila<T> : IQueue<T>
-    {
-        internal class No<X>
-        {
-            protected X info;
-            protected No<X> prox;
-
-            public No(X i, No<X> p)
-            {
-                Info = i;
-                Prox = p;
-            }
-            public No(X i) : this(i, null)
-            { }
-            public X Info
-            {
-                get => info;
-                set
-                {
-                    if (value == null)
-                        throw new Exception("Informação ausente");
-                    info = value;
-                }
-            }
-            public No<X> Prox
-            {
-                get => prox;
-                set => prox = value;
-            }
-        }
-
+    {       
         protected No<T> inicio, fim;
         protected int qtd;
         public Fila()

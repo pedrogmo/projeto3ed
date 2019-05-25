@@ -7,69 +7,8 @@ namespace apCaminhosMarte
     //Felipe Scherer Vicentin (18178)
     //Pedro Gomes Moreira (18174)
     class ArvoreBinaria<T> where T : IComparable<T>
-    {
-        public class No<X> where X : IComparable<X>
-        {
-            protected X info;
-            protected No<X> esquerdo, direito;
-            public No(X i, No<X> e, No<X> d)
-            {
-                Info = i;
-                Esquerdo = e;
-                Direito = d;
-            }
-            public No()
-            {
-                esquerdo = direito = null;
-                info = default(X);
-            }
-            public No(X i)
-            {
-                esquerdo = direito = null;
-                info = i;
-            }
-            public X Info
-            {
-                get => info;
-                set
-                {
-                    if (value == null)
-                        throw new Exception("Informação inválida");
-                    info = value;
-                }
-            }
-            public No<X> Esquerdo
-            {
-                get => esquerdo;
-                set => esquerdo = value;
-            }
-            public No<X> Direito
-            {
-                get => direito;
-                set => direito = value;
-            }
-            public bool EhFolha()
-            {
-                return esquerdo == null && direito == null;
-            }
-            public override string ToString()
-            {
-                return $"({esquerdo.info.ToString()}){info.ToString()}({direito.info.ToString()})";
-            }
-            public static bool operator !=(No<X> um, No<X> outro)
-            {
-                return !(um == outro);
-            }
-            public static bool operator ==(No<X> um, No<X> outro)
-            {
-                if (um is null && outro is null)
-                    return true;
-                if (um is null || outro is null)
-                    return false;
-                return um.info.CompareTo(outro.info) == 0;
-            }
-        }
-        protected No<T> raiz;
+    {       
+        protected NoArvore<T> raiz;
         public T Raiz { get => raiz.Info; }
 
         public ArvoreBinaria()
@@ -78,7 +17,7 @@ namespace apCaminhosMarte
         }
         public ArvoreBinaria(T info)
         {
-            raiz = new No<T>(info);
+            raiz = new NoArvore<T>(info);
         }
         public ArvoreBinaria(ArvoreBinaria<T> outra)
         {
@@ -102,7 +41,7 @@ namespace apCaminhosMarte
 
         public void Inserir(T dado)
         {
-            void Inserir(No<T> novo, No<T> anterior)
+            void Inserir(NoArvore<T> novo, NoArvore<T> anterior)
             {
                 int comparacao = novo.Info.CompareTo(anterior.Info);
                 if (comparacao < 0)
@@ -120,7 +59,7 @@ namespace apCaminhosMarte
                         Inserir(novo, anterior.Direito);
                 }
             }
-            No<T> novoNo = new No<T>(dado);
+            NoArvore<T> novoNo = new NoArvore<T>(dado);
             if (EstaVazia)
                 raiz = novoNo;
             else
@@ -130,9 +69,9 @@ namespace apCaminhosMarte
         {
             if (EstaVazia)
                 throw new Exception("Árvore vazia");
-            No<T> BuscarNoAntecessor(T dadoAtual)
+            NoArvore<T> BuscarNoAntecessor(T dadoAtual)
             {
-                No<T> noAtual = null, anterior = null;
+                NoArvore<T> noAtual = null, anterior = null;
                 if (!EstaVazia)
                 {
                     noAtual = raiz;
@@ -154,10 +93,10 @@ namespace apCaminhosMarte
                 }
                 return anterior;
             }
-            No<T> antecessor = BuscarNoAntecessor(dado);
+            NoArvore<T> antecessor = BuscarNoAntecessor(dado);
             if (antecessor != null)
             {
-                No<T> atual = null;
+                NoArvore<T> atual = null;
                 if (antecessor.Esquerdo.Info.CompareTo(dado) == 0)
                     atual = antecessor.Esquerdo;
                 else
@@ -185,7 +124,7 @@ namespace apCaminhosMarte
                 }
                 else
                 {
-                    No<T> aux = antecessor.Esquerdo;
+                    NoArvore<T> aux = antecessor.Esquerdo;
                     while (aux != null && aux.Direito.Direito != null) aux = aux.Direito;
                     T info = aux.Direito.Info;
                     aux.Direito = null;
@@ -196,9 +135,9 @@ namespace apCaminhosMarte
 
         public void Excluir(T info)
         {           
-            void Excluir(No<T> atual, No<T> anterior)
+            void Excluir(NoArvore<T> atual, NoArvore<T> anterior)
             {
-                T MaiorExcluir(No<T> ant, No<T> atu)
+                T MaiorExcluir(NoArvore<T> ant, NoArvore<T> atu)
                 {
                     if (atu.Direito == null)
                     {
@@ -251,7 +190,7 @@ namespace apCaminhosMarte
         {
             if (EstaVazia)
                 throw new Exception("Árvore vazia");
-            T MenorNo(No<T> atual)
+            T MenorNo(NoArvore<T> atual)
             {
                 if (atual.Esquerdo == null)
                     return atual.Info;
@@ -263,7 +202,7 @@ namespace apCaminhosMarte
         {
             if (EstaVazia)
                 throw new Exception("Árvore vazia");
-            T MaiorNo(No<T> atual)
+            T MaiorNo(NoArvore<T> atual)
             {
                 if (atual.Direito == null)
                     return atual.Info;
@@ -274,7 +213,7 @@ namespace apCaminhosMarte
 
         public void PreOrdem(Action<T> callback)
         {
-            void PreOrdem(No<T> atual)
+            void PreOrdem(NoArvore<T> atual)
             {
                 if (atual != null)
                 {
@@ -287,7 +226,7 @@ namespace apCaminhosMarte
         }
         public void InOrdem(Action<T> callback)
         {
-            void InOrdem(No<T> atual)
+            void InOrdem(NoArvore<T> atual)
             {
                 if (atual != null)
                 {
@@ -300,7 +239,7 @@ namespace apCaminhosMarte
         }
         public void PosOrdem(Action<T> callback)
         {
-            void PosOrdem(No<T> atual)
+            void PosOrdem(NoArvore<T> atual)
             {
                 if (atual != null)
                 {
@@ -313,7 +252,7 @@ namespace apCaminhosMarte
         }
         public void PorNivel(Action<T> callback)
         {
-            Fila<No<T>> umaFila = new Fila<No<T>>();
+            Fila<NoArvore<T>> umaFila = new Fila<NoArvore<T>>();
             var noAtual = raiz;
             while (noAtual != null)
             {
@@ -331,14 +270,14 @@ namespace apCaminhosMarte
 
         public T Buscar(T dado)
         {
-            var no = BuscarNo(dado);
-            if (no != null)
-                return no.Info;
+            var NoArvore = BuscarNo(dado);
+            if (NoArvore != null)
+                return NoArvore.Info;
             return default(T);
         }
-        protected No<T> BuscarNo(T dado)
+        protected NoArvore<T> BuscarNo(T dado)
         {
-            No<T> atual = null;
+            NoArvore<T> atual = null;
             if (!EstaVazia)
             {
                 atual = raiz;
@@ -358,7 +297,7 @@ namespace apCaminhosMarte
         {
             get
             {
-                int Contar(No<T> atual)
+                int Contar(NoArvore<T> atual)
                 {
                     if (atual == null)
                         return 0;
@@ -372,7 +311,7 @@ namespace apCaminhosMarte
         {
             get
             {
-                int ContarFolhas(No<T> atual)
+                int ContarFolhas(NoArvore<T> atual)
                 {
                     if (atual == null)
                         return 0;
@@ -387,7 +326,7 @@ namespace apCaminhosMarte
         {
             get
             {
-                int ContarAltura(No<T> atual)
+                int ContarAltura(NoArvore<T> atual)
                 {
                     //a altura de uma árvore é a maior dentre a altura da esquerda e da direita
                     int alturaEsquerda, alturaDireita;
@@ -407,7 +346,7 @@ namespace apCaminhosMarte
             if (this == obj) return true;
             if (obj == null) return false;
             ArvoreBinaria<T> arvore = obj as ArvoreBinaria<T>;
-            bool ArvoreIgual(No<T> a, No<T> b)
+            bool ArvoreIgual(NoArvore<T> a, NoArvore<T> b)
             {
                 if (a == null && b == null)
                     return true;
@@ -419,7 +358,7 @@ namespace apCaminhosMarte
         }
         public override string ToString()
         {
-            string EscreverNo(No<T> atual)
+            string EscreverNo(NoArvore<T> atual)
             {
                 if (atual == null)
                     return "";
@@ -428,7 +367,7 @@ namespace apCaminhosMarte
             }
             return EscreverNo(raiz);
         }
-        /*protected bool DoisFilhos(No<T> atual)
+        /*protected bool DoisFilhos(NoArvore<T> atual)
         {
            if (atual.Esquerdo != null && atual.Direito != null)
                return DoisFilhos(atual.Esquerdo) && DoisFilhos(atual.Direito);
@@ -443,7 +382,7 @@ namespace apCaminhosMarte
            if (!achou)
                Console.WriteLine("Dado não foi achado");
         }
-        protected T EscreverAntecessor(No<T> atual, T dado, ref bool achou)
+        protected T EscreverAntecessor(NoArvore<T> atual, T dado, ref bool achou)
         {
            if (atual != null)
            {

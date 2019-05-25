@@ -61,6 +61,11 @@
     </Compile>
     <Compile Include="Grafo.cs" />
     <Compile Include="IQueue.cs" />
+    <Compile Include="IStack.cs" />
+    <Compile Include="No.cs" />
+    <Compile Include="NoArvore.cs" />
+    <Compile Include="Pilha.cs" />
+    <Compile Include="PilhaVaziaException.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">

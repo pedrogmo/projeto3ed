@@ -8,12 +8,9 @@ namespace apCaminhosMarte
 {
     //Felipe Scherer Vicentin (18178)
     //Pedro Gomes Moreira (18174)
-    class Grafo
+    class PilhaVaziaException : Exception
     {
-        protected int[,] matriz;
-        public Grafo(int[,] m)
-        {
-            matriz = m;
-        }
+        public PilhaVaziaException(string msg) : base(msg)
+        { }
     }
 }
