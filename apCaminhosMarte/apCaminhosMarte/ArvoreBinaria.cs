@@ -9,25 +9,29 @@ namespace apCaminhosMarte
     class ArvoreBinaria<T> where T : IComparable<T>
     {       
         protected NoArvore<T> raiz;
-        public T Raiz { get => raiz.Info; }
+        public NoArvore<T> Raiz { get => raiz; }
 
         public ArvoreBinaria()
         {
             raiz = null;
         }
+
         public ArvoreBinaria(T info)
         {
             raiz = new NoArvore<T>(info);
         }
+
         public ArvoreBinaria(ArvoreBinaria<T> outra)
         {
             raiz = outra.raiz;
         }
+
         public ArvoreBinaria(T[] v)
         {
             foreach (T t in v)
                 Inserir(t);
         }
+
         public ArvoreBinaria(IEnumerable<T> l)
         {
             foreach (T t in l)
@@ -65,6 +69,7 @@ namespace apCaminhosMarte
             else
                 Inserir(novoNo, raiz);
         }
+
         /*public void Excluir(T dado)
         {
             if (EstaVazia)
@@ -93,6 +98,7 @@ namespace apCaminhosMarte
                 }
                 return anterior;
             }
+
             NoArvore<T> antecessor = BuscarNoAntecessor(dado);
             if (antecessor != null)
             {
@@ -275,6 +281,7 @@ namespace apCaminhosMarte
                 return NoArvore.Info;
             return default(T);
         }
+
         protected NoArvore<T> BuscarNo(T dado)
         {
             NoArvore<T> atual = null;
@@ -293,6 +300,7 @@ namespace apCaminhosMarte
             }
             return atual;
         }
+
         public int Tamanho
         {
             get
@@ -307,6 +315,7 @@ namespace apCaminhosMarte
                 return Contar(raiz);
             }
         }
+
         public int QuantidadeFolhas
         {
             get
@@ -322,6 +331,7 @@ namespace apCaminhosMarte
                 return ContarFolhas(raiz);
             }
         }
+
         public int Altura
         {
             get
@@ -341,6 +351,7 @@ namespace apCaminhosMarte
                 return ContarAltura(raiz);
             }
         }
+
         public override bool Equals(object obj)
         {
             if (this == obj) return true;
@@ -356,6 +367,7 @@ namespace apCaminhosMarte
             }
             return ArvoreIgual(raiz, arvore.raiz);
         }
+
         public override string ToString()
         {
             string EscreverNo(NoArvore<T> atual)
@@ -367,6 +379,7 @@ namespace apCaminhosMarte
             }
             return EscreverNo(raiz);
         }
+
         /*protected bool DoisFilhos(NoArvore<T> atual)
         {
            if (atual.Esquerdo != null && atual.Direito != null)
@@ -375,6 +388,7 @@ namespace apCaminhosMarte
                return true;
            return false;
         }
+
         public void EscreverAntecessores(T dado)
         {
            bool achou = false;
@@ -382,6 +396,7 @@ namespace apCaminhosMarte
            if (!achou)
                Console.WriteLine("Dado não foi achado");
         }
+
         protected T EscreverAntecessor(NoArvore<T> atual, T dado, ref bool achou)
         {
            if (atual != null)
