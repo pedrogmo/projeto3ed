@@ -85,7 +85,39 @@ namespace apCaminhosMarte
 
         private void tpArvore_Paint(object sender, PaintEventArgs e)
         {
+            int x = (int)tpArvore.Width / 2;
+            int y = 0;
+            double angulo = Math.PI / 2;
+            double incremento = Math.PI / 2.5;
+            double comprimento = 450;
+            Graphics gfx = e.Graphics;
+            arvore.PreOrdem((Cidade c) => {
+                DesenhaNo(c, x, y, angulo, incremento, comprimento, gfx);
+                angulo += incremento;
+                incremento *= 0.60;
+                comprimento *= 0.80;
+                x = (int)Math.Round(x + Math.Cos(angulo) * comprimento);                
+                y = (int)Math.Round(y + Math.Sin(angulo) * comprimento);
+                if (c == arvore.Raiz)
+                    y = 25;
+            });
+        }
 
+        private void DesenhaNo(Cidade atual,
+                           int x, int y, double angulo, double incremento,
+                           double comprimento, Graphics g)
+        {
+            int xf, yf;
+            Pen caneta = new Pen(Color.Red);
+            xf = (int)Math.Round(x + Math.Cos(angulo) * comprimento);
+            yf = (int)Math.Round(y + Math.Sin(angulo) * comprimento);
+            if (atual == arvore.Raiz)
+                yf = 25;
+            g.DrawLine(caneta, x, y, xf, yf);
+            SolidBrush preenchimento = new SolidBrush(Color.Blue);
+            g.FillEllipse(preenchimento, xf - 15, yf - 15, 30, 30);
+            g.DrawString(Convert.ToString(atual.Codigo), new Font("Century Gothic", 12),
+                            new SolidBrush(Color.Yellow), xf - 15, yf - 10);
         }
     }
 }
