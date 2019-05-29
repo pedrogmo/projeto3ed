@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Threading;
 
 namespace apCaminhosMarte
 {
@@ -36,7 +37,7 @@ namespace apCaminhosMarte
         private void Form1_Load(object sender, EventArgs e)
         {
             arvore = new ArvoreBinaria<Cidade>();
-            var leitorCidades = new StreamReader("cidades.txt");
+            var leitorCidades = new StreamReader("cidades.txt", Encoding.UTF7);
             int qtdCidades = 0;
             while (!leitorCidades.EndOfStream)
             {
@@ -61,6 +62,28 @@ namespace apCaminhosMarte
         }
 
         private void Form1_Resize(object sender, EventArgs e)
+        {
+            pbMapa.Update();
+        }
+
+        private void pbMapa_Paint(object sender, PaintEventArgs e)
+        {
+            Graphics gfx = e.Graphics;
+            arvore.InOrdem((Cidade c) => {
+                DesenhaCidade(c, gfx);
+            });
+        }
+
+        private void DesenhaCidade(Cidade c, Graphics gfx)
+        {
+            int x = pbMapa.Size.Width * c.X / 4096;
+            int y = pbMapa.Size.Height * c.Y / 2048;
+            SolidBrush corCidade = new SolidBrush(Color.Black);
+            gfx.FillEllipse(corCidade, x , y , 10, 10);
+            gfx.DrawString(c.Nome, new Font("Century Gothic", 10, FontStyle.Bold), corCidade, new Point(x - 10, y + 10));         
+        }
+
+        private void tpArvore_Paint(object sender, PaintEventArgs e)
         {
 
         }

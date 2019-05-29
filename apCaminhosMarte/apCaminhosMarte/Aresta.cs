@@ -7,7 +7,7 @@ using apCaminhosMarte;
 
 namespace apCaminhosMarte
 {
-    //Felipe Scherer Vicentin (18178)
+    /*Felipe Scherer Vicentin (18178)
     //Pedro Gomes Moreira (18174)
     class Aresta
     {
@@ -34,4 +34,5 @@ namespace apCaminhosMarte
 
         public int Preco { get => preco; }
     }
+    */
 }
