@@ -138,58 +138,57 @@ namespace apCaminhosMarte
                 }
             }
         }*/
-
+       
         public void Excluir(T info)
         {           
-            void Excluir(NoArvore<T> atual, NoArvore<T> anterior)
-            {
-                T MaiorExcluir(NoArvore<T> ant, NoArvore<T> atu)
-                {
-                    if (atu.Direito == null)
+            void Excluir(ref NoArvore<T> atual)
+            {                
+                NoArvore<T> atualAnt;
+                if (atual != null)
+                { 
+                    if (atual.Info.CompareTo(info) > 0)
                     {
-                        ant.Direito = atu.Esquerdo;
-                        return atu.Info;
+                        var e = atual.Esquerdo;
+                        Excluir(ref e);
                     }
-                    return (MaiorExcluir(atu, atu.Direito));
-                }
-
-                int comparacao = info.CompareTo(atual.Info);
-                int comparacao2 = atual.Info.CompareTo(anterior.Info);
-                if (comparacao == 0) //achou nó
-                {
-                    if (atual.EhFolha())
+                    else if (atual.Info.CompareTo(info) < 0)
                     {
-                        if (comparacao2 > 0)
-                            anterior.Direito = null;
-                        else
-                            anterior.Esquerdo = null;
+                        var d = atual.Direito;
+                        Excluir(ref d);
                     }
                     else
                     {
-                        if (atual.Esquerdo != null && atual.Direito != null)
-                            atual.Info = MaiorExcluir(atual, atual.Esquerdo);
-                        else if (atual.Esquerdo != null)
-                        {
-                            if (comparacao2 > 0)
-                                anterior.Direito = atual.Esquerdo;
-                            else
-                                anterior.Esquerdo = atual.Esquerdo;
-                        }
+                        atualAnt = atual; // nó a retirar
+                        if (atual.Direito == null)
+                            atual = atual.Esquerdo;
                         else
-                        {
-                            if (comparacao2 > 0)
-                                anterior.Direito = atual.Direito;
-                            else
-                                anterior.Esquerdo = atual.Direito;
+                        if (atual.Esquerdo == null)
+                            atual = atual.Direito;
+                        else
+                        { // pai de 2 filhos
+                            var e = atual.Esquerdo;
+                            Rearranja(ref e);
+                            atualAnt = null; // libera o nó excluído
                         }
                     }
                 }
-                else if (comparacao > 0)
-                    Excluir(atual.Direito, atual);
-                else
-                    Excluir(atual.Esquerdo, atual);
+
+                void Rearranja(ref NoArvore<T> aux)
+                {
+                    if (aux.Direito != null)
+                    {
+                        var d = aux.Direito;
+                        Rearranja(ref d); // Procura Maior
+                    }
+                    else
+                    { // Guarda os dados do nó a excluir
+                        atualAnt.Info = aux.Info; // troca conteúdo!
+                        atualAnt = aux; // funciona com a passagem por referência
+                        aux = aux.Esquerdo;
+                    }
+                }
             }
-            Excluir(raiz, raiz);
+            Excluir(ref raiz);
         }        
 
         public T Menor()
