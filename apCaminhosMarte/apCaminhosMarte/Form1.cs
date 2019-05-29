@@ -19,7 +19,8 @@ namespace apCaminhosMarte
         ArvoreBinaria<Cidade> arvore;
         Grafo grafo;
         Color corNo = Color.Blue;
-        Color corLinha = Color.Red;
+        Color corLinhaArvore = Color.Red;
+        Color corLinhaCidade = Color.DarkBlue;
         Color corCidade = Color.Black;
         const int TAMANHO_NO = 30;
         const int TAMANHO_CIDADE = 10;
@@ -69,7 +70,9 @@ namespace apCaminhosMarte
                 //linha da matriz é cidade de origem
                 int c = int.Parse(linha.Substring(Cidade.TAMANHO_CODIGO, Cidade.TAMANHO_CODIGO).Trim());
                 //coluna da matriz é cidade de destino
-                matriz[l, c] = int.Parse(linha.Substring(2 * Cidade.TAMANHO_CODIGO, 5).Trim());
+                int d = int.Parse(linha.Substring(2 * Cidade.TAMANHO_CODIGO, 5).Trim());
+                //distância entre cidades
+                matriz[l, c] = d;
             }
             grafo = new Grafo(matriz);
             leitorCaminhos.Close();
@@ -86,12 +89,30 @@ namespace apCaminhosMarte
             arvore.InOrdem((Cidade c) => {
                 DesenhaCidade(c, gfx);
             });
+            for (int l = 0; l < arvore.Tamanho; ++l)
+                for (int c = 0; c < arvore.Tamanho; ++c)
+                {
+                    int dist = grafo.DistanciaEntre(l, c);
+                    if (dist != 0)
+                        DesenhaLinha(l,c,dist,gfx);
+                }
+        }
+
+        private void DesenhaLinha(int cod1, int cod2, int dist, Graphics gfx)
+        {
+            Cidade um = arvore.Buscar(new Cidade(cod1));
+            Cidade dois = arvore.Buscar(new Cidade(cod2));
+            int x1 = pbMapa.Size.Width * um.X / 4096;
+            int y1 = pbMapa.Size.Height * um.Y / 2048;
+            int x2 = pbMapa.Size.Width * dois.X / 4096;
+            int y2 = pbMapa.Size.Height * dois.Y / 2048;
+            gfx.DrawLine(new Pen(corLinhaCidade), x1, y1, x2, y2);
         }
 
         private void DesenhaCidade(Cidade c, Graphics gfx)
         {
-            int x = pbMapa.Size.Width * c.X / 4096;
-            int y = pbMapa.Size.Height * c.Y / 2048;
+            int x = pbMapa.Size.Width * c.X / 4096 - TAMANHO_CIDADE / 2;
+            int y = pbMapa.Size.Height * c.Y / 2048 - TAMANHO_CIDADE / 2;
             gfx.FillEllipse(new SolidBrush(corCidade), x , y , TAMANHO_CIDADE, TAMANHO_CIDADE);
             gfx.DrawString(c.Nome, new Font("Century Gothic", 10, FontStyle.Bold), new SolidBrush(corCidade), new Point(x - 10, y + 10));         
         }

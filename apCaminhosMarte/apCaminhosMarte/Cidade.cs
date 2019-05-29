@@ -38,6 +38,11 @@ namespace apCaminhosMarte
             Y = int.Parse(linha.Substring(COMECO_Y, TAMANHO_Y).Trim());
         }
 
+        public Cidade(int codC)
+        {
+            Codigo = codC;
+        }
+
         public int Codigo
         {
             get => codigo;
