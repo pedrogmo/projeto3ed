@@ -9,7 +9,7 @@ namespace apCaminhosMarte
     class ArvoreBinaria<T> where T : IComparable<T>
     {       
         protected NoArvore<T> raiz;
-        public T Raiz { get => raiz.Info; }
+        public NoArvore<T> Raiz { get => raiz; }
 
         public ArvoreBinaria()
         {

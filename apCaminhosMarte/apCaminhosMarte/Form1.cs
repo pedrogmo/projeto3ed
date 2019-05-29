@@ -18,6 +18,11 @@ namespace apCaminhosMarte
     {
         ArvoreBinaria<Cidade> arvore;
         Grafo grafo;
+        Color corNo = Color.Blue;
+        Color corLinha = Color.Red;
+        Color corCidade = Color.Black;
+        const int TAMANHO_NO = 30;
+        const int TAMANHO_CIDADE = 10;
 
         public Form1()
         {
@@ -78,46 +83,42 @@ namespace apCaminhosMarte
         {
             int x = pbMapa.Size.Width * c.X / 4096;
             int y = pbMapa.Size.Height * c.Y / 2048;
-            SolidBrush corCidade = new SolidBrush(Color.Black);
-            gfx.FillEllipse(corCidade, x , y , 10, 10);
-            gfx.DrawString(c.Nome, new Font("Century Gothic", 10, FontStyle.Bold), corCidade, new Point(x - 10, y + 10));         
+            gfx.FillEllipse(new SolidBrush(corCidade), x , y , TAMANHO_CIDADE, TAMANHO_CIDADE);
+            gfx.DrawString(c.Nome, new Font("Century Gothic", 10, FontStyle.Bold), new SolidBrush(corCidade), new Point(x - 10, y + 10));         
         }
 
         private void tpArvore_Paint(object sender, PaintEventArgs e)
         {
-            int x = (int)tpArvore.Width / 2;
-            int y = 0;
-            double angulo = Math.PI / 2;
-            double incremento = Math.PI / 2.5;
-            double comprimento = 450;
             Graphics gfx = e.Graphics;
-            arvore.PreOrdem((Cidade c) => {
-                DesenhaNo(c, x, y, angulo, incremento, comprimento, gfx);
-                angulo += incremento;
-                incremento *= 0.60;
-                comprimento *= 0.80;
-                x = (int)Math.Round(x + Math.Cos(angulo) * comprimento);                
-                y = (int)Math.Round(y + Math.Sin(angulo) * comprimento);
-                if (c == arvore.Raiz)
-                    y = 25;
-            });
+            desenhaArvore(true, arvore.Raiz, (int)tpArvore.Width / 2, 0, Math.PI / 2,
+                                 Math.PI / 2.5, 450, gfx);
         }
 
-        private void DesenhaNo(Cidade atual,
+        private void desenhaArvore(bool primeiraVez, NoArvore<Cidade> raiz,
                            int x, int y, double angulo, double incremento,
                            double comprimento, Graphics g)
         {
             int xf, yf;
-            Pen caneta = new Pen(Color.Red);
-            xf = (int)Math.Round(x + Math.Cos(angulo) * comprimento);
-            yf = (int)Math.Round(y + Math.Sin(angulo) * comprimento);
-            if (atual == arvore.Raiz)
-                yf = 25;
-            g.DrawLine(caneta, x, y, xf, yf);
-            SolidBrush preenchimento = new SolidBrush(Color.Blue);
-            g.FillEllipse(preenchimento, xf - 15, yf - 15, 30, 30);
-            g.DrawString(Convert.ToString(atual.Codigo), new Font("Century Gothic", 12),
-                            new SolidBrush(Color.Yellow), xf - 15, yf - 10);
+            if (raiz != null)
+            {
+                Pen caneta = new Pen(Color.Red);
+                xf = (int)Math.Round(x + Math.Cos(angulo) * comprimento);
+                yf = (int)Math.Round(y + Math.Sin(angulo) * comprimento);
+                if (primeiraVez)
+                    yf = 25;
+                g.DrawLine(caneta, x, y, xf, yf);
+                var esq = raiz.Esquerdo;
+                desenhaArvore(false, esq, xf, yf, Math.PI / 2 + incremento,
+                                                 incremento * 0.60, comprimento * 0.8, g);
+                var dir = raiz.Direito;
+                desenhaArvore(false, dir, xf, yf, Math.PI / 2 - incremento,
+                                                  incremento * 0.60, comprimento * 0.8, g);
+                // sleep(100);
+                SolidBrush preenchimento = new SolidBrush(Color.Blue);
+                g.FillEllipse(preenchimento, xf - 15, yf - 15, 30, 30);
+                g.DrawString(Convert.ToString(raiz.Info.Codigo), new Font("Comic Sans", 12),
+                              new SolidBrush(Color.Yellow), xf - 15, yf - 10);
+            }
         }
     }
 }
