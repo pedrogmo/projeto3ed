@@ -7,28 +7,27 @@ using apCaminhosMarte;
 
 namespace apCaminhosMarte
 {
-    /*Felipe Scherer Vicentin (18178)
+    //Felipe Scherer Vicentin (18178)
     //Pedro Gomes Moreira (18174)
     class Caminho
     {
         protected Cidade origem, destino;
-        protected Fila<Aresta> rota;
-        protected int distanciaTotal, precoTotal;
+        protected List<Cidade> rota;
+        protected int distanciaTotal;
 
-        public int PrecoTotal { get => precoTotal; }
         public Cidade Origem { get => origem; }
         public Cidade Destino { get => destino; }
-        public Fila<Aresta> Rota { get => rota; }
+        public List<Cidade> Rota { get => rota; }
 
         public Caminho(Cidade origem, Cidade destino)
         {
             this.origem = origem;
             this.destino = destino;
-            distanciaTotal = precoTotal = 0;            
-            rota = new Fila<Aresta>();
+            distanciaTotal = 0;            
+            rota = new List<Cidade>();
         }
 
-        public Caminho(Cidade origem, Cidade destino, Fila<Aresta> rota, int distanciaTotal)
+        public Caminho(Cidade origem, Cidade destino, List<Cidade> rota, int distanciaTotal)
         {
             this.origem = origem;
             this.destino = destino;
@@ -36,11 +35,11 @@ namespace apCaminhosMarte
             this.distanciaTotal = distanciaTotal;
         }
 
-        public void AdicionarARota(Aresta aresta)
+        public void AdicionarARota(Cidade um, int dist, Cidade dois)
         {
-            distanciaTotal += aresta.Distancia;
-            precoTotal += aresta.Preco;
-            rota.Enfileirar(aresta);
+            distanciaTotal += dist;
+            rota.Add(um);
+            rota.Add(dois);
         }
-    }*/
+    }
 }

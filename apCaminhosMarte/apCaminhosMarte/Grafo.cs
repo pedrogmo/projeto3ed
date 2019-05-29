@@ -15,5 +15,11 @@ namespace apCaminhosMarte
         {
             matriz = m;
         }
+
+        public List<Caminho> Caminhos(int origem, int fim)
+        {
+            List<Caminho> ret = new List<Caminho>();
+            return ret;
+        }
     }
 }

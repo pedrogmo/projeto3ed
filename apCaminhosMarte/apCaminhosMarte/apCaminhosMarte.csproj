@@ -47,7 +47,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Aresta.cs" />
     <Compile Include="ArvoreBinaria.cs" />
     <Compile Include="Caminho.cs" />
     <Compile Include="Cidade.cs" />

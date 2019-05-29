@@ -36,7 +36,16 @@ namespace apCaminhosMarte
 
         private void BtnBuscar_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Buscar caminhos entre cidades selecionadas");
+            if (lsbOrigem.SelectedIndex == -1)
+                MessageBox.Show("Selecione uma cidade de origem", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            else if(lsbDestino.SelectedIndex == -1)
+                MessageBox.Show("Selecione uma cidade de destino", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            else if (lsbOrigem.SelectedIndex == lsbDestino.SelectedIndex)
+                MessageBox.Show("Selecione uma cidade de destino diferente da origem", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            else
+            {
+                List<Caminho> possibilidades = grafo.Caminhos(lsbOrigem.SelectedIndex, lsbDestino.SelectedIndex);
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
