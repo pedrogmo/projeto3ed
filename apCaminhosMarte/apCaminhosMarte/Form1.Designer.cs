@@ -263,14 +263,6 @@
             this.lsbDestino.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lsbDestino.FormattingEnabled = true;
             this.lsbDestino.ItemHeight = 16;
-            this.lsbDestino.Items.AddRange(new object[] {
-            "  0 - Acheron          ",
-            "  1 - Arena           ",
-            "  2 - Arrakeen       ",
-            "  3 - Bakhuysen       ",
-            "  4 - Bradbury ",
-            "  5 - Burroughs       ",
-            "  6 - Cairo            "});
             this.lsbDestino.Location = new System.Drawing.Point(1038, 129);
             this.lsbDestino.Name = "lsbDestino";
             this.lsbDestino.Size = new System.Drawing.Size(177, 84);
@@ -292,14 +284,6 @@
             this.lsbOrigem.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lsbOrigem.FormattingEnabled = true;
             this.lsbOrigem.ItemHeight = 16;
-            this.lsbOrigem.Items.AddRange(new object[] {
-            "  0 - Acheron          ",
-            "  1 - Arena           ",
-            "  2 - Arrakeen       ",
-            "  3 - Bakhuysen       ",
-            "  4 - Bradbury ",
-            "  5 - Burroughs       ",
-            "  6 - Cairo            "});
             this.lsbOrigem.Location = new System.Drawing.Point(1038, 25);
             this.lsbOrigem.Name = "lsbOrigem";
             this.lsbOrigem.Size = new System.Drawing.Size(177, 84);

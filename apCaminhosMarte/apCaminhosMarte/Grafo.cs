@@ -16,7 +16,11 @@ namespace apCaminhosMarte
         public Grafo(int[,] m)
         {
             matriz = m;
-            quantidade = (int) Math.Sqrt(matriz.Length);
+            double raiz = Math.Sqrt(matriz.Length);
+            if (raiz - (int)raiz > 0)
+                throw new Exception("Matriz inválida");
+            quantidade = (int) raiz;
+
         }
 
         public int Quantidade { get => quantidade; }
@@ -32,53 +36,64 @@ namespace apCaminhosMarte
 
         public List<Caminho> Caminhos(int origem, int destino)
         {
+            if (origem < 0 || origem >= quantidade)
+                throw new Exception("Origem inválida");
+            if (destino < 0 || destino >= quantidade)
+                throw new Exception("Destino inválido");
+
             List<Caminho> ret = new List<Caminho>();
             Pilha<int> pilha = new Pilha<int>();
+            bool fim = false;
             int cidadeAtual = origem;
+
             bool[] jaPassou = new bool[quantidade];
             for (int i = 0; i < quantidade; ++i)
                 jaPassou[i] = false;
-            bool fim = false;            
+            jaPassou[destino] = true;
+
             while (!fim)
             {
-                if (matriz[cidadeAtual, destino] != 0)
+                if (matriz[cidadeAtual, destino] != 0 && !jaPassou[cidadeAtual])
                 {
-                    pilha.Empilhar(cidadeAtual);
-                    pilha.Empilhar(destino);
-                    /*
-                     * Achou um caminho, fazer algo
-                    */
+                    //Achou um caminho
                     var inversa = new Pilha<int>();
-                    var caminho = new Caminho(origem, destino);
+                    inversa.Empilhar(destino);
+                    inversa.Empilhar(cidadeAtual);
                     while (!pilha.EstaVazia())
-                        inversa.Empilhar(pilha.Desempilhar());
-                    int cidadeAnterior = -1;
+                        inversa.Empilhar(pilha.Desempilhar());                    
+                    int origemDaInversa = inversa.Desempilhar();
+                    pilha.Empilhar(origemDaInversa);
+                    var caminho = new Caminho(origemDaInversa);
                     while (!inversa.EstaVazia())
                     {
-                        int atual = inversa.Desempilhar();
-                        pilha.Empilhar(atual);
-                        if (cidadeAnterior != -1)
-                            caminho.AdicionarARota(cidadeAtual, matriz[atual, cidadeAnterior]);
-                        cidadeAnterior = atual;
+                        int codCidadeSaida = inversa.Desempilhar();
+                        caminho.AdicionarARota(codCidadeSaida, matriz[caminho.Rota[caminho.Rota.Count-1] , codCidadeSaida]);
+                        if (codCidadeSaida != destino && codCidadeSaida != cidadeAtual)
+                            pilha.Empilhar(codCidadeSaida);
                     }
-                    ret.Add(caminho);
+                    ret.Add(caminho);         
                 }
-
-                else
+                jaPassou[cidadeAtual] = true;
+                int ind = 0;
+                bool haSaida = false;
+                while (!haSaida && ind < quantidade)
                 {
-                    jaPassou[cidadeAtual] = true;
-                    bool haParaOndeIr = false;
-                    int saida = 0;
-                    while (saida < quantidade && !haParaOndeIr)
-                        if (matriz[cidadeAtual, saida] != 0 && !jaPassou[saida])
-                            cidadeAtual = saida;
-                    if (!haParaOndeIr)
+                    if (matriz[cidadeAtual, ind] != 0 && !jaPassou[ind])
+                    //Achou cidade para sair
                     {
-                        if (pilha.EstaVazia())
-                            fim = true;
-                        else
-                            cidadeAtual = pilha.Desempilhar();
+                        pilha.Empilhar(cidadeAtual);
+                        cidadeAtual = ind;                        
+                        haSaida = true;
                     }
+                    ++ind;
+                }
+                if (!haSaida)
+                {
+                    //Regressivo
+                    if (pilha.EstaVazia())
+                        fim = true;
+                    else
+                        cidadeAtual = pilha.Desempilhar();
                 }
             }
             return ret;

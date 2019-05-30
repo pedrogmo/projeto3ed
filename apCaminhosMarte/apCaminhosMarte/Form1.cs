@@ -61,6 +61,10 @@ namespace apCaminhosMarte
                 ++qtdCidades;
             }
             leitorCidades.Close();
+            arvore.InOrdem((Cidade c) => {
+                lsbOrigem.Items.Add(c);
+                lsbDestino.Items.Add(c);
+            });
             int[,] matriz = new int[qtdCidades, qtdCidades];
             for (int l = 0; l < qtdCidades; ++l)
                 for (int c = 0; c < qtdCidades; ++c)

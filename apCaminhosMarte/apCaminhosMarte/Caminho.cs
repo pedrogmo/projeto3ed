@@ -11,26 +11,20 @@ namespace apCaminhosMarte
     //Pedro Gomes Moreira (18174)
     class Caminho
     {
-        protected int origem, destino;
         protected List<int> rota;
         protected int distanciaTotal;
 
-        public int Origem { get => origem; }
-        public int Destino { get => destino; }
         public List<int> Rota { get => rota; }
 
-        public Caminho(int origem, int destino)
+        public Caminho(int origem)
         {
-            this.origem = origem;
-            this.destino = destino;
             distanciaTotal = 0;            
             rota = new List<int>();
+            rota.Add(origem);
         }
 
-        public Caminho(int origem, int destino, List<int> rota, int distanciaTotal)
+        public Caminho(List<int> rota, int distanciaTotal)
         {
-            this.origem = origem;
-            this.destino = destino;
             this.rota = rota;
             this.distanciaTotal = distanciaTotal;
         }

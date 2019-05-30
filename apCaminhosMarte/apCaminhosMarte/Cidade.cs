@@ -91,5 +91,10 @@ namespace apCaminhosMarte
         {
             return codigo - c.codigo;
         }
+
+        public override string ToString()
+        {
+            return $"{codigo} - {nome}";
+        }
     }
 }

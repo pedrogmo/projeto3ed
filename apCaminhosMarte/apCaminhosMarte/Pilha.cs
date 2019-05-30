@@ -49,5 +49,17 @@ namespace apCaminhosMarte
             --qtd;
             return ret;
         }
+
+        public override string ToString()
+        {
+            string ret = EstaVazia() ? "Pilha vazia" : "";
+            for (No<T> p = topo; p != null; p = p.Prox)
+            {
+                ret += "(" + p.Info.ToString() + ")";
+                if (p.Prox != null)
+                    ret += " , ";
+            }
+            return ret;
+        }
     }
 }
