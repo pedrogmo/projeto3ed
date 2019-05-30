@@ -20,10 +20,10 @@ namespace apCaminhosMarte
         Grafo grafo;
         Color corNo = Color.Blue;
         Color corLinhaArvore = Color.Red;
-        Color corLinhaCidade = Color.DarkBlue;
+        Color corLinhaCidade = Color.FromArgb(51, 77, 201);
         Color corCidade = Color.Black;
-        const int TAMANHO_NO = 30;
-        const int TAMANHO_CIDADE = 10;
+        const int DIAMETRO_NO = 30;
+        const int DIAMETRO_CIDADE = 10;
 
         public Form1()
         {
@@ -105,29 +105,52 @@ namespace apCaminhosMarte
         {
             Cidade um = arvore.Buscar(new Cidade(cod1));
             Cidade dois = arvore.Buscar(new Cidade(cod2));
+            var caneta = new Pen(corLinhaCidade, 2.5f);            
             int x1 = pbMapa.Size.Width * um.X / 4096;
             int y1 = pbMapa.Size.Height * um.Y / 2048;
             int x2 = pbMapa.Size.Width * dois.X / 4096;
             int y2 = pbMapa.Size.Height * dois.Y / 2048;
-            gfx.DrawLine(new Pen(corLinhaCidade), x1, y1, x2, y2);
+            if (um.Nome == "Gondor" && (dois.Nome == "Arrakeen" || dois.Nome == "Senzeni Na"))
+            {
+                gfx.DrawLine(caneta, x1, y1, pbMapa.Size.Width - 1, y2);
+                gfx.DrawLine(caneta, 0, y2, x2, y2);
+            }
+            else if (dois.Nome == "Gondor" && (um.Nome == "Arrakeen" || um.Nome == "Senzeni Na"))
+            {
+                gfx.DrawLine(caneta, x2, y2, pbMapa.Size.Width - 1, y1);
+                gfx.DrawLine(caneta, 0, y1, x1, y1);
+            }
+            else
+            {
+                gfx.DrawLine(caneta, x1, y1, x2, y2);
+                double p323 = (Math.Sqrt(Math.Pow((x2 - x1), 2) + Math.Pow((y2 - y1), 2)) * DIAMETRO_CIDADE / 2) / Math.Abs(x2 - x1);
+                Point p = new Point(Math.Abs(x2-x1) + DIAMETRO_CIDADE / 2, Math.Abs(y2-y1) + DIAMETRO_CIDADE / 2);
+                int sinalVertical = x1 > x2 ? 1:-1;
+                int sinalHorizontal = y1 > y2? 1:-1;
+                Point[] verticesSeta = { new Point(x2 + DIAMETRO_CIDADE/2, y2 + DIAMETRO_CIDADE/2)
+                    //new Point(x2 + sinalHorizontal * DIAMETRO_CIDADE / 2, y2 + sinalVertical * DIAMETRO_CIDADE / 2)
+                    //new Point(x2 - sinalHorizontal * DIAMETRO_CIDADE / 2, y2 - sinalVertical * DIAMETRO_CIDADE / 2) 
+                };
+                gfx.DrawEllipse(new Pen(Color.Red, 4), new RectangleF(verticesSeta[0], new Size(1, 1)));
+            }
         }
 
         private void DesenhaCidade(Cidade c, Graphics gfx)
         {
-            int x = pbMapa.Size.Width * c.X / 4096 - TAMANHO_CIDADE / 2;
-            int y = pbMapa.Size.Height * c.Y / 2048 - TAMANHO_CIDADE / 2;
-            gfx.FillEllipse(new SolidBrush(corCidade), x , y , TAMANHO_CIDADE, TAMANHO_CIDADE);
+            int x = pbMapa.Size.Width * c.X / 4096 - DIAMETRO_CIDADE / 2;
+            int y = pbMapa.Size.Height * c.Y / 2048 - DIAMETRO_CIDADE / 2;
+            gfx.FillEllipse(new SolidBrush(corCidade), x , y , DIAMETRO_CIDADE, DIAMETRO_CIDADE);
             gfx.DrawString(c.Nome, new Font("Century Gothic", 10, FontStyle.Bold), new SolidBrush(corCidade), new Point(x - 10, y + 10));         
         }
 
         private void tpArvore_Paint(object sender, PaintEventArgs e)
         {
             Graphics gfx = e.Graphics;
-            desenhaArvore(true, arvore.Raiz, (int)tpArvore.Width / 2, 0, Math.PI / 2,
+            DesenhaArvore(true, arvore.Raiz, (int)tpArvore.Width / 2, 0, Math.PI / 2,
                                  Math.PI / 2.5, 450, gfx);
         }
 
-        private void desenhaArvore(bool primeiraVez, NoArvore<Cidade> raiz,
+        private void DesenhaArvore(bool primeiraVez, NoArvore<Cidade> raiz,
                            int x, int y, double angulo, double incremento,
                            double comprimento, Graphics g)
         {
@@ -141,10 +164,10 @@ namespace apCaminhosMarte
                     yf = 25;
                 g.DrawLine(caneta, x, y, xf, yf);
                 var esq = raiz.Esquerdo;
-                desenhaArvore(false, esq, xf, yf, Math.PI / 2 + incremento,
+                DesenhaArvore(false, esq, xf, yf, Math.PI / 2 + incremento,
                                                  incremento * 0.60, comprimento * 0.8, g);
                 var dir = raiz.Direito;
-                desenhaArvore(false, dir, xf, yf, Math.PI / 2 - incremento,
+                DesenhaArvore(false, dir, xf, yf, Math.PI / 2 - incremento,
                                                   incremento * 0.60, comprimento * 0.8, g);
                 // sleep(100);
                 SolidBrush preenchimento = new SolidBrush(Color.Blue);
