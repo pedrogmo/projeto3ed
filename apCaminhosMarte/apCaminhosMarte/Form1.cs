@@ -61,6 +61,9 @@ namespace apCaminhosMarte
             }
             leitorCidades.Close();
             int[,] matriz = new int[qtdCidades, qtdCidades];
+            for (int l = 0; l < qtdCidades; ++l)
+                for (int c = 0; c < qtdCidades; ++c)
+                    matriz[l, c] = 0;
             var leitorCaminhos = new StreamReader("caminhos.txt");
             while (!leitorCaminhos.EndOfStream)
             {

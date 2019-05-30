@@ -30,9 +30,57 @@ namespace apCaminhosMarte
             return matriz[l, c];
         }
 
-        public List<Caminho> Caminhos(int origem, int fim)
+        public List<Caminho> Caminhos(int origem, int destino)
         {
             List<Caminho> ret = new List<Caminho>();
+            Pilha<int> pilha = new Pilha<int>();
+            int cidadeAtual = origem;
+            bool[] jaPassou = new bool[quantidade];
+            for (int i = 0; i < quantidade; ++i)
+                jaPassou[i] = false;
+            bool fim = false;            
+            while (!fim)
+            {
+                if (matriz[cidadeAtual, destino] != 0)
+                {
+                    pilha.Empilhar(cidadeAtual);
+                    pilha.Empilhar(destino);
+                    /*
+                     * Achou um caminho, fazer algo
+                    */
+                    var inversa = new Pilha<int>();
+                    var caminho = new Caminho(origem, destino);
+                    while (!pilha.EstaVazia())
+                        inversa.Empilhar(pilha.Desempilhar());
+                    int cidadeAnterior = -1;
+                    while (!inversa.EstaVazia())
+                    {
+                        int atual = inversa.Desempilhar();
+                        pilha.Empilhar(atual);
+                        if (cidadeAnterior != -1)
+                            caminho.AdicionarARota(cidadeAtual, matriz[atual, cidadeAnterior]);
+                        cidadeAnterior = atual;
+                    }
+                    ret.Add(caminho);
+                }
+
+                else
+                {
+                    jaPassou[cidadeAtual] = true;
+                    bool haParaOndeIr = false;
+                    int saida = 0;
+                    while (saida < quantidade && !haParaOndeIr)
+                        if (matriz[cidadeAtual, saida] != 0 && !jaPassou[saida])
+                            cidadeAtual = saida;
+                    if (!haParaOndeIr)
+                    {
+                        if (pilha.EstaVazia())
+                            fim = true;
+                        else
+                            cidadeAtual = pilha.Desempilhar();
+                    }
+                }
+            }
             return ret;
         }
     }

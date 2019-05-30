@@ -11,23 +11,23 @@ namespace apCaminhosMarte
     //Pedro Gomes Moreira (18174)
     class Caminho
     {
-        protected Cidade origem, destino;
-        protected List<Cidade> rota;
+        protected int origem, destino;
+        protected List<int> rota;
         protected int distanciaTotal;
 
-        public Cidade Origem { get => origem; }
-        public Cidade Destino { get => destino; }
-        public List<Cidade> Rota { get => rota; }
+        public int Origem { get => origem; }
+        public int Destino { get => destino; }
+        public List<int> Rota { get => rota; }
 
-        public Caminho(Cidade origem, Cidade destino)
+        public Caminho(int origem, int destino)
         {
             this.origem = origem;
             this.destino = destino;
             distanciaTotal = 0;            
-            rota = new List<Cidade>();
+            rota = new List<int>();
         }
 
-        public Caminho(Cidade origem, Cidade destino, List<Cidade> rota, int distanciaTotal)
+        public Caminho(int origem, int destino, List<int> rota, int distanciaTotal)
         {
             this.origem = origem;
             this.destino = destino;
@@ -35,11 +35,10 @@ namespace apCaminhosMarte
             this.distanciaTotal = distanciaTotal;
         }
 
-        public void AdicionarARota(Cidade um, int dist, Cidade dois)
+        public void AdicionarARota(int cidadeNova, int dist)
         {
             distanciaTotal += dist;
-            rota.Add(um);
-            rota.Add(dois);
+            rota.Add(cidadeNova);
         }
     }
 }
