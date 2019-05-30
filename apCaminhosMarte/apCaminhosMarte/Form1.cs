@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Threading;
+using System.Drawing.Drawing2D;
 
 namespace apCaminhosMarte
 {
@@ -89,9 +90,6 @@ namespace apCaminhosMarte
         private void pbMapa_Paint(object sender, PaintEventArgs e)
         {
             Graphics gfx = e.Graphics;
-            arvore.InOrdem((Cidade c) => {
-                DesenhaCidade(c, gfx);
-            });
             for (int l = 0; l < arvore.Tamanho; ++l)
                 for (int c = 0; c < arvore.Tamanho; ++c)
                 {
@@ -99,13 +97,17 @@ namespace apCaminhosMarte
                     if (dist != 0)
                         DesenhaLinha(l,c,dist,gfx);
                 }
+            arvore.InOrdem((Cidade c) => {
+                DesenhaCidade(c, gfx);
+            });
         }
 
         private void DesenhaLinha(int cod1, int cod2, int dist, Graphics gfx)
         {
             Cidade um = arvore.Buscar(new Cidade(cod1));
             Cidade dois = arvore.Buscar(new Cidade(cod2));
-            var caneta = new Pen(corLinhaCidade, 2.5f);            
+            var caneta = new Pen(corLinhaCidade, 2.5f);
+            AdjustableArrowCap bigArrow = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2);
             int x1 = pbMapa.Size.Width * um.X / 4096;
             int y1 = pbMapa.Size.Height * um.Y / 2048;
             int x2 = pbMapa.Size.Width * dois.X / 4096;
@@ -113,25 +115,19 @@ namespace apCaminhosMarte
             if (um.Nome == "Gondor" && (dois.Nome == "Arrakeen" || dois.Nome == "Senzeni Na"))
             {
                 gfx.DrawLine(caneta, x1, y1, pbMapa.Size.Width - 1, y2);
+                caneta.CustomEndCap = bigArrow;
                 gfx.DrawLine(caneta, 0, y2, x2, y2);
             }
             else if (dois.Nome == "Gondor" && (um.Nome == "Arrakeen" || um.Nome == "Senzeni Na"))
             {
                 gfx.DrawLine(caneta, x2, y2, pbMapa.Size.Width - 1, y1);
+                caneta.CustomEndCap = bigArrow;
                 gfx.DrawLine(caneta, 0, y1, x1, y1);
             }
             else
             {
+                caneta.CustomEndCap = bigArrow;
                 gfx.DrawLine(caneta, x1, y1, x2, y2);
-                double p323 = (Math.Sqrt(Math.Pow((x2 - x1), 2) + Math.Pow((y2 - y1), 2)) * DIAMETRO_CIDADE / 2) / Math.Abs(x2 - x1);
-                Point p = new Point(Math.Abs(x2-x1) + DIAMETRO_CIDADE / 2, Math.Abs(y2-y1) + DIAMETRO_CIDADE / 2);
-                int sinalVertical = x1 > x2 ? 1:-1;
-                int sinalHorizontal = y1 > y2? 1:-1;
-                Point[] verticesSeta = { new Point(x2 + DIAMETRO_CIDADE/2, y2 + DIAMETRO_CIDADE/2)
-                    //new Point(x2 + sinalHorizontal * DIAMETRO_CIDADE / 2, y2 + sinalVertical * DIAMETRO_CIDADE / 2)
-                    //new Point(x2 - sinalHorizontal * DIAMETRO_CIDADE / 2, y2 - sinalVertical * DIAMETRO_CIDADE / 2) 
-                };
-                gfx.DrawEllipse(new Pen(Color.Red, 4), new RectangleF(verticesSeta[0], new Size(1, 1)));
             }
         }
 
