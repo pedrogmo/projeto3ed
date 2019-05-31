@@ -16,6 +16,8 @@ namespace apCaminhosMarte
 
         public List<int> Rota { get => rota; }
 
+        public int DistanciaTotal { get => distanciaTotal; }
+
         public Caminho(int origem)
         {
             distanciaTotal = 0;            

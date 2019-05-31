@@ -18,7 +18,9 @@ namespace apCaminhosMarte
     public partial class Form1 : Form
     {
         ArvoreBinaria<Cidade> arvore;
+        int qtdCidades;
         Grafo grafo;
+
         Color corNo = Color.Blue;
         Color corLinhaArvore = Color.Red;
         Color corLinhaCidade = Color.FromArgb(51, 77, 201);
@@ -47,20 +49,56 @@ namespace apCaminhosMarte
             else
             {
                 List<Caminho> possibilidades = grafo.Caminhos(lsbOrigem.SelectedIndex, lsbDestino.SelectedIndex);
+                dgvCaminhos.RowCount = possibilidades.Count;
+                dgvCaminhos.ColumnCount = qtdCidades;
+                int l = 0;
+                foreach (Caminho caminho in possibilidades)
+                {
+                    int c = 0;
+                    foreach (int cidade in caminho.Rota)
+                        dgvCaminhos.Rows[l].Cells[c++].Value = arvore.Buscar(new Cidade(cidade));
+                    ++l;
+                }
+
+                bool nenhumCaminho = possibilidades.Count == 0;
+                dgvMelhorCaminho.RowCount = nenhumCaminho ? 0 : 1;
+                dgvMelhorCaminho.ColumnCount = nenhumCaminho ? 0 : qtdCidades;
+
+                if (!nenhumCaminho)
+                {
+                    Caminho melhor = null;
+                    int menorDist = int.MaxValue;
+                    foreach (Caminho cam in possibilidades)
+                        if (cam.DistanciaTotal < menorDist)
+                        {
+                            menorDist = cam.DistanciaTotal;
+                            melhor = cam;
+                        }
+                    int c = 0;
+                    foreach(int cidade in melhor.Rota)
+                        dgvMelhorCaminho.Rows[0].Cells[c++].Value = arvore.Buscar(new Cidade(cidade));
+                }
+
+                if (nenhumCaminho)
+                    MessageBox.Show("Nenhum caminho foi encontrado", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);                
+                else
+                    MessageBox.Show("Caminhos foram encontrados, clique em algum deles para visualizar", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             arvore = new ArvoreBinaria<Cidade>();
-            var leitorCidades = new StreamReader("cidades.txt", Encoding.UTF7);
-            int qtdCidades = 0;
+            var leitorCidades = new StreamReader("cidades.txt", Encoding.UTF7);           
             while (!leitorCidades.EndOfStream)
             {
                 arvore.Inserir(new Cidade(leitorCidades.ReadLine()));
                 ++qtdCidades;
             }
             leitorCidades.Close();
+
+            qtdCidades = arvore.Tamanho;
+
             arvore.InOrdem((Cidade c) => {
                 lsbOrigem.Items.Add(c);
                 lsbDestino.Items.Add(c);
@@ -94,8 +132,8 @@ namespace apCaminhosMarte
         private void pbMapa_Paint(object sender, PaintEventArgs e)
         {
             Graphics gfx = e.Graphics;
-            for (int l = 0; l < arvore.Tamanho; ++l)
-                for (int c = 0; c < arvore.Tamanho; ++c)
+            for (int l = 0; l < qtdCidades; ++l)
+                for (int c = 0; c < qtdCidades; ++c)
                 {
                     int dist = grafo.DistanciaEntre(l, c);
                     if (dist != 0)
