@@ -167,9 +167,9 @@ namespace apCaminhosMarte
             }
             else if (dois.Nome == "Gondor" && (um.Nome == "Arrakeen" || um.Nome == "Senzeni Na"))
             {
-                gfx.DrawLine(caneta, x2, y2, pbMapa.Size.Width - 1, y1);
+                gfx.DrawLine(caneta, 0, y1, x1, y1);                
                 caneta.CustomEndCap = bigArrow;
-                gfx.DrawLine(caneta, 0, y1, x1, y1);
+                gfx.DrawLine(caneta, pbMapa.Size.Width - 1, y1, x2, y2);
             }
             else
             {
