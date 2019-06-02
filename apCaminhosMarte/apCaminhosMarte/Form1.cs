@@ -34,65 +34,12 @@ namespace apCaminhosMarte
             InitializeComponent();
         }
 
-        private void TxtCaminhos_DoubleClick(object sender, EventArgs e)
-        {
-           
-        }
-
-        private void BtnBuscar_Click(object sender, EventArgs e)
-        {
-            if (lsbOrigem.SelectedIndex == -1)
-                MessageBox.Show("Selecione uma cidade de origem", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            else if(lsbDestino.SelectedIndex == -1)
-                MessageBox.Show("Selecione uma cidade de destino", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            else if (lsbOrigem.SelectedIndex == lsbDestino.SelectedIndex)
-                MessageBox.Show("Selecione uma cidade de destino diferente da origem", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            else
-            {
-                List<Caminho> possibilidades = grafo.Caminhos(lsbOrigem.SelectedIndex, lsbDestino.SelectedIndex);
-                dgvCaminhos.RowCount = possibilidades.Count;
-                dgvCaminhos.ColumnCount = qtdCidades;
-                int l = 0;
-                foreach (Caminho caminho in possibilidades)
-                {
-                    int c = 0;
-                    foreach (int cidade in caminho.Rota)
-                        dgvCaminhos.Rows[l].Cells[c++].Value = arvore.Buscar(new Cidade(cidade));
-                    ++l;
-                }
-
-                bool nenhumCaminho = possibilidades.Count == 0;
-                dgvMelhorCaminho.RowCount = nenhumCaminho ? 0 : 1;
-                dgvMelhorCaminho.ColumnCount = nenhumCaminho ? 0 : qtdCidades;
-
-                if (!nenhumCaminho)
-                {
-                    Caminho melhor = null;
-                    int menorDist = int.MaxValue;
-                    foreach (Caminho cam in possibilidades)
-                        if (cam.DistanciaTotal < menorDist)
-                        {
-                            menorDist = cam.DistanciaTotal;
-                            melhor = cam;
-                        }
-                    int c = 0;
-                    foreach(int cidade in melhor.Rota)
-                        dgvMelhorCaminho.Rows[0].Cells[c++].Value = arvore.Buscar(new Cidade(cidade));
-                }
-
-                if (nenhumCaminho)
-                    MessageBox.Show("Nenhum caminho foi encontrado", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);                
-                else
-                    MessageBox.Show("Caminhos foram encontrados, clique em algum deles para visualizar", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
-
         private void Form1_Load(object sender, EventArgs e)
         {
-            gif = new Bitmap("../../../../Imagens/cidadeDestino.gif");
-            ImageAnimator.Animate(gif, drawFrame);
+            gif = new Bitmap("../../Imagens/cidadeDestino.gif");
+            ImageAnimator.Animate(gif, DrawFrame);
             arvore = new ArvoreBinaria<Cidade>();
-            var leitorCidades = new StreamReader("cidades.txt", Encoding.UTF7);           
+            var leitorCidades = new StreamReader("../../Arquivos/CidadesMarte.txt", Encoding.UTF7);
             while (!leitorCidades.EndOfStream)
             {
                 arvore.Inserir(new Cidade(leitorCidades.ReadLine()));
@@ -110,7 +57,7 @@ namespace apCaminhosMarte
             for (int l = 0; l < qtdCidades; ++l)
                 for (int c = 0; c < qtdCidades; ++c)
                     matriz[l, c] = 0;
-            var leitorCaminhos = new StreamReader("caminhos.txt");
+            var leitorCaminhos = new StreamReader("../../Arquivos/CaminhosEntreCidadesMarte.txt");
             while (!leitorCaminhos.EndOfStream)
             {
                 //codigo1, codigo2, distância
@@ -126,11 +73,61 @@ namespace apCaminhosMarte
             grafo = new Grafo(matriz);
             leitorCaminhos.Close();
         }
+        
+        private void BtnBuscar_Click(object sender, EventArgs e)
+        {
+            if (lsbOrigem.SelectedIndex == -1)
+                MessageBox.Show("Selecione uma cidade de origem", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            else if(lsbDestino.SelectedIndex == -1)
+                MessageBox.Show("Selecione uma cidade de destino", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            else if (lsbOrigem.SelectedIndex == lsbDestino.SelectedIndex)
+                MessageBox.Show("Selecione uma cidade de destino diferente da origem", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            else
+            {
+                List<Caminho> possibilidades = grafo.Caminhos(lsbOrigem.SelectedIndex, lsbDestino.SelectedIndex);
+                bool nenhumCaminho = possibilidades.Count == 0;
+                if (nenhumCaminho)
+                    MessageBox.Show("Nenhum caminho foi encontrado", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                else
+                {
+                    dgvCaminhos.RowCount = possibilidades.Count;
+                    dgvCaminhos.ColumnCount = qtdCidades;
+                    int l = 0, c = 0;
+                    foreach (Caminho caminho in possibilidades)
+                    {
+                        c = 0;
+                        foreach (int cidade in caminho.Rota)
+                            dgvCaminhos.Rows[l].Cells[c++].Value = arvore.Buscar(new Cidade(cidade));
+                        ++l;
+                    }
+                    dgvMelhorCaminho.RowCount = 1;
+                    dgvMelhorCaminho.ColumnCount = qtdCidades;
+                    Caminho melhor = null;
+                    int menorDist = int.MaxValue;
+                    foreach (Caminho cam in possibilidades)
+                        if (cam.DistanciaTotal < menorDist)
+                        {
+                            menorDist = cam.DistanciaTotal;
+                            melhor = cam;
+                        }
 
-        private void Form1_Resize(object sender, EventArgs e)
+                    c = 0;
+                    foreach (int cidade in melhor.Rota)
+                        dgvMelhorCaminho.Rows[0].Cells[c++].Value = arvore.Buscar(new Cidade(cidade));
+                    MessageBox.Show("Caminhos foram encontrados, clique em algum deles para visualizar", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }                
+            }
+        }
+
+        private void TxtCaminhos_DoubleClick(object sender, EventArgs e)
+        {
+
+        }
+
+        /*private void Form1_Resize(object sender, EventArgs e)
         {
             pbMapa.Update();
-        }
+        }*/
 
         private void pbMapa_Paint(object sender, PaintEventArgs e)
         {
@@ -185,7 +182,7 @@ namespace apCaminhosMarte
             gfx.FillEllipse(new SolidBrush(corCidade), x , y , DIAMETRO_CIDADE, DIAMETRO_CIDADE);
             gfx.DrawString(c.Nome, new Font("Century Gothic", 10, FontStyle.Bold), new SolidBrush(corCidade), new Point(x - 10, y + 10));
             if (origem)
-                gfx.DrawImage(Image.FromFile("../../../../Imagens/cidadeOrigem.png"), x - DIAMETRO_CIDADE * 1.5f, y - DIAMETRO_CIDADE * 3.5f, DIAMETRO_CIDADE * 4, DIAMETRO_CIDADE * 4);
+                gfx.DrawImage(Image.FromFile("../../Imagens/cidadeOrigem.png"), x - DIAMETRO_CIDADE * 1.5f, y - DIAMETRO_CIDADE * 3.5f, DIAMETRO_CIDADE * 4, DIAMETRO_CIDADE * 4);
             if (destino)
             {
                 ImageAnimator.UpdateFrames(gif);
@@ -199,7 +196,7 @@ namespace apCaminhosMarte
                 }
             }
         }
-        private void drawFrame(object sender, EventArgs e)
+        private void DrawFrame(object sender, EventArgs e)
         {
             pbMapa.Invalidate();
         }

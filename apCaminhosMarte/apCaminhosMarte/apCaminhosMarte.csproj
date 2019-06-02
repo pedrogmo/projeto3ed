@@ -92,5 +92,15 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Arquivos\CaminhosEntreCidadesMarte.txt" />
+    <Content Include="Arquivos\CidadesMarte.txt" />
+    <Content Include="Arquivos\CidadesMarteOrdenado.txt" />
+    <Content Include="Imagens\cidadeDestino.gif" />
+    <Content Include="Imagens\cidadeOrigem.png" />
+    <Content Include="Imagens\Mapa Marte com Rotas Aereas.jpg" />
+    <Content Include="Imagens\Mapa Marte sem rotas.jpg" />
+    <Content Include="Imagens\mars_political_map_by_axiaterraartunion_d4vfxdf-pre.jpg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

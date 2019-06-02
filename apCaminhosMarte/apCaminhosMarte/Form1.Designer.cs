@@ -102,6 +102,7 @@
             this.dgvMelhorCaminho.Location = new System.Drawing.Point(1037, 448);
             this.dgvMelhorCaminho.Name = "dgvMelhorCaminho";
             this.dgvMelhorCaminho.ReadOnly = true;
+            this.dgvMelhorCaminho.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvMelhorCaminho.Size = new System.Drawing.Size(277, 71);
             this.dgvMelhorCaminho.TabIndex = 10;
             // 
@@ -109,10 +110,12 @@
             // 
             this.dgvCaminhos.AllowUserToAddRows = false;
             this.dgvCaminhos.AllowUserToDeleteRows = false;
+            this.dgvCaminhos.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvCaminhos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvCaminhos.Location = new System.Drawing.Point(1037, 238);
             this.dgvCaminhos.Name = "dgvCaminhos";
             this.dgvCaminhos.ReadOnly = true;
+            this.dgvCaminhos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvCaminhos.Size = new System.Drawing.Size(277, 181);
             this.dgvCaminhos.TabIndex = 9;
             // 
@@ -212,7 +215,6 @@
             this.Name = "Form1";
             this.Text = "Projeto 3 - busca de caminhos entre cidades";
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.Resize += new System.EventHandler(this.Form1_Resize);
             this.tabControl1.ResumeLayout(false);
             this.tpRotas.ResumeLayout(false);
             this.tpRotas.PerformLayout();
