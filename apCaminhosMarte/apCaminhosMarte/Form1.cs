@@ -21,11 +21,13 @@ namespace apCaminhosMarte
         int qtdCidades;
         Grafo grafo;
         Bitmap gif;
+        int[] caminhoAtual;
 
         Color corNo = Color.Blue;
         Color corLinhaArvore = Color.Red;
         Color corLinhaCidade = Color.FromArgb(51, 77, 201);
         Color corCidade = Color.Black;
+        Color corLinhaCaminho = Color.Red;
         const int DIAMETRO_NO = 30;
         const int DIAMETRO_CIDADE = 10;
 
@@ -49,7 +51,8 @@ namespace apCaminhosMarte
 
             qtdCidades = arvore.Tamanho;
 
-            arvore.InOrdem((Cidade c) => {
+            arvore.InOrdem((Cidade c) =>
+            {
                 lsbOrigem.Items.Add(c);
                 lsbDestino.Items.Add(c);
             });
@@ -73,12 +76,12 @@ namespace apCaminhosMarte
             grafo = new Grafo(matriz);
             leitorCaminhos.Close();
         }
-        
+
         private void BtnBuscar_Click(object sender, EventArgs e)
         {
             if (lsbOrigem.SelectedIndex == -1)
                 MessageBox.Show("Selecione uma cidade de origem", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            else if(lsbDestino.SelectedIndex == -1)
+            else if (lsbDestino.SelectedIndex == -1)
                 MessageBox.Show("Selecione uma cidade de destino", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             else if (lsbOrigem.SelectedIndex == lsbDestino.SelectedIndex)
                 MessageBox.Show("Selecione uma cidade de destino diferente da origem", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -112,10 +115,12 @@ namespace apCaminhosMarte
                         }
 
                     c = 0;
+                    caminhoAtual = melhor.Rota.ToArray();
                     foreach (int cidade in melhor.Rota)
                         dgvMelhorCaminho.Rows[0].Cells[c++].Value = arvore.Buscar(new Cidade(cidade));
+                    pbMapa.Refresh();
                     MessageBox.Show("Caminhos foram encontrados, clique em algum deles para visualizar", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }                
+                }
             }
         }
 
@@ -137,41 +142,85 @@ namespace apCaminhosMarte
                 {
                     int dist = grafo.DistanciaEntre(l, c);
                     if (dist != 0)
-                        DesenhaLinha(l,c,dist,gfx);
+                        DesenhaLinha(l, c, dist, gfx);
                 }
             int origem = lsbOrigem.SelectedIndex;
             int destino = lsbDestino.SelectedIndex;
-            arvore.InOrdem((Cidade c) => {
+            arvore.InOrdem((Cidade c) =>
+            {
                 DesenhaCidade(c, gfx, c.Codigo == origem, c.Codigo == destino);
             });
+            if (caminhoAtual != null && caminhoAtual.Length > 0)
+            {
+                Cidade c1;
+                Cidade c2;
+                for (int i = 1; i < caminhoAtual.Length; i++)
+                {
+                    c1 = arvore.Buscar(new Cidade(caminhoAtual[i - 1]));
+                    c2 = arvore.Buscar(new Cidade(caminhoAtual[i]));
+                    Point p1 = new Point(pbMapa.Size.Width * c1.X / 4096, pbMapa.Size.Height * c1.Y / 2048);
+                    Point p2 = new Point(pbMapa.Size.Width * c2.X / 4096, pbMapa.Size.Height * c2.Y / 2048);
+                    Pen caneta = new Pen(corLinhaCaminho, 3);
+                    caneta.CustomEndCap = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2);
+                    //DesenhaLinhaAnimada(gfx, caneta, p1, p2);
+                    gfx.DrawLine(caneta, p1, p2);
+                }
+            }
         }
-
+        private void DesenhaLinhaAnimada(Graphics gfx, Pen caneta, Point p1, Point p2)
+        {
+            int qtdPassos = 0;
+            int duracao = 500;
+            int passo = 100;
+            //float tamanhoPasso = (p2.X - p1.X) / (duracao / passo);
+            float tamanhoPasso = 1;
+            //float distancia = (p2.X * p1.Y - p1.X * p2.Y) / (p2.X - p1.X);
+            double c = p1.Y - p2.Y;
+            double b = p2.X - p1.X;
+            double a = Math.Round(Math.Sqrt(Convert.ToDouble(Math.Pow(b, 2) + Math.Pow(c, 2))));
+            double angulo = Math.Acos(b/a);
+            int aux = 0;
+            bool acabou = false;
+            while (!acabou)
+            {
+                aux++;
+                if (aux == passo)
+                {
+                    aux = 0;
+                    qtdPassos++;
+                    float x = qtdPassos * tamanhoPasso;
+                    //double aAtual = x / Math.Cos(angulo);
+                    float y = Convert.ToSingle(-1 * (Math.Tan(angulo) * x));
+                    gfx.DrawLine(new Pen(corLinhaCaminho, 3), p1, new PointF(x + p1.X, y + p1.Y));
+                    if (qtdPassos * tamanhoPasso > b)
+                        acabou = true;
+                }
+            }
+        }
         private void DesenhaLinha(int cod1, int cod2, int dist, Graphics gfx)
         {
             Cidade um = arvore.Buscar(new Cidade(cod1));
             Cidade dois = arvore.Buscar(new Cidade(cod2));
             var caneta = new Pen(corLinhaCidade, 2.5f);
             AdjustableArrowCap bigArrow = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2);
-            int x1 = pbMapa.Size.Width * um.X / 4096;
-            int y1 = pbMapa.Size.Height * um.Y / 2048;
-            int x2 = pbMapa.Size.Width * dois.X / 4096;
-            int y2 = pbMapa.Size.Height * dois.Y / 2048;
+            Point p1 = new Point(pbMapa.Size.Width * um.X / 4096, pbMapa.Size.Height * um.Y / 2048);
+            Point p2 = new Point(pbMapa.Size.Width * dois.X / 4096, pbMapa.Size.Height * dois.Y / 2048);
             if (um.Nome == "Gondor" && (dois.Nome == "Arrakeen" || dois.Nome == "Senzeni Na"))
             {
-                gfx.DrawLine(caneta, x1, y1, pbMapa.Size.Width - 1, y2);
+                gfx.DrawLine(caneta, p1.X, p1.Y, pbMapa.Size.Width - 1, p2.Y);
                 caneta.CustomEndCap = bigArrow;
-                gfx.DrawLine(caneta, 0, y2, x2, y2);
+                gfx.DrawLine(caneta, 0, p2.Y, p2.X, p2.Y);
             }
             else if (dois.Nome == "Gondor" && (um.Nome == "Arrakeen" || um.Nome == "Senzeni Na"))
             {
-                gfx.DrawLine(caneta, 0, y1, x1, y1);                
+                gfx.DrawLine(caneta, 0, p1.Y, p1.X, p1.Y);
                 caneta.CustomEndCap = bigArrow;
-                gfx.DrawLine(caneta, pbMapa.Size.Width - 1, y1, x2, y2);
+                gfx.DrawLine(caneta, pbMapa.Size.Width - 1, p1.Y, p2.X, p2.Y);
             }
             else
             {
                 caneta.CustomEndCap = bigArrow;
-                gfx.DrawLine(caneta, x1, y1, x2, y2);
+                gfx.DrawLine(caneta, p1, p2);
             }
         }
 
@@ -179,7 +228,7 @@ namespace apCaminhosMarte
         {
             int x = pbMapa.Size.Width * c.X / 4096 - DIAMETRO_CIDADE / 2;
             int y = pbMapa.Size.Height * c.Y / 2048 - DIAMETRO_CIDADE / 2;
-            gfx.FillEllipse(new SolidBrush(corCidade), x , y , DIAMETRO_CIDADE, DIAMETRO_CIDADE);
+            gfx.FillEllipse(new SolidBrush(corCidade), x, y, DIAMETRO_CIDADE, DIAMETRO_CIDADE);
             gfx.DrawString(c.Nome, new Font("Century Gothic", 10, FontStyle.Bold), new SolidBrush(corCidade), new Point(x - 10, y + 10));
             if (origem)
                 gfx.DrawImage(Image.FromFile("../../Imagens/cidadeOrigem.png"), x - DIAMETRO_CIDADE * 1.5f, y - DIAMETRO_CIDADE * 3.5f, DIAMETRO_CIDADE * 4, DIAMETRO_CIDADE * 4);
