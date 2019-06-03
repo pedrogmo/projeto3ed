@@ -86,25 +86,27 @@ namespace apCaminhosMarte
         {
             int qtdPassos = 0;
             int duracao = 500;
-            int passo = 100;
-            //float tamanhoPasso = (p2.X - p1.X) / (duracao / passo);
-            float tamanhoPasso = 1;
-            //float distancia = (p2.X * p1.Y - p1.X * p2.Y) / (p2.X - p1.X);
+            int intervalo = 100;
             double c = p1.Y - p2.Y;
             double b = p2.X - p1.X;
             double a = Math.Round(Math.Sqrt(Convert.ToDouble(Math.Pow(b, 2) + Math.Pow(c, 2))));
-            double angulo = Math.Atan2(c, b);
+            double tamanhoPasso = a/duracao;
+            double angulo = 0;
+            if (b > 0)
+                angulo = Math.Atan2(c, b);
+            else
+                angulo = Math.Acos(b / a) + Math.PI;
             bool acabou = false;
             void Tick()
             {
                 while (!acabou)
                 {
                     qtdPassos++;
-                    float x = qtdPassos * tamanhoPasso;
+                    float x = Convert.ToSingle(qtdPassos * tamanhoPasso);
                     float y = Convert.ToSingle(angulo * x);
                     x = b < 0 ? x * -1 : x;
                     gfx.DrawLine(new Pen(corLinhaCaminho, 3), p1, new PointF(x + p1.X, p1.Y - y));
-                    if (Math.Round(Math.Sqrt(Convert.ToDouble(Math.Pow(x, 2) + Math.Pow(y, 2)))) > a)
+                    if (qtdPassos * tamanhoPasso > a)
                         acabou = true;
                 }
             }
