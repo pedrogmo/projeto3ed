@@ -95,7 +95,7 @@ namespace apCaminhosMarte
             double a = Math.Round(Math.Sqrt(Convert.ToDouble(Math.Pow(b, 2) + Math.Pow(c, 2))));
             double angulo = Math.Atan2(c, b);
             bool acabou = false;
-            void tick()
+            void Tick()
             {
                 while (!acabou)
                 {
@@ -108,7 +108,7 @@ namespace apCaminhosMarte
                         acabou = true;
                 }
             }
-            tick();
+            Tick();
         }
         private void DrawFrame(object sender, EventArgs e)
         {
