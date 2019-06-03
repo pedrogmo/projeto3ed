@@ -71,7 +71,8 @@ namespace apCaminhosMarte
                         if (codCidadeSaida != destino && codCidadeSaida != cidadeAtual)
                             pilha.Empilhar(codCidadeSaida);
                     }
-                    ret.Add(caminho);         
+                    ret.Add(caminho);
+                    pilha.Desempilhar();
                 }
                 jaPassou[cidadeAtual] = true;
                 int ind = 0;
