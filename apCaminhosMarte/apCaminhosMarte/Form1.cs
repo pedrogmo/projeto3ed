@@ -115,11 +115,6 @@ namespace apCaminhosMarte
             }
         }
 
-        /*private void Form1_Resize(object sender, EventArgs e)
-        {
-            pbMapa.Update();
-        }*/
-
         private void pbMapa_Paint(object sender, PaintEventArgs e)
         {
             desenhador.Gfx = e.Graphics;
