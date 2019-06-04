@@ -9,59 +9,84 @@ using System.Windows.Forms;
 
 namespace apCaminhosMarte
 {
-    class Desenhador
+    static class Desenhador
     {
-        #region Atributos e Constantes
-        PictureBox pb;
-        Graphics gfx;
-        ArvoreBinaria<Cidade> arvore;
-        Bitmap gif;
-        Color corNo = Color.Blue;
-        Color corLinhaArvore = Color.Red;
-        Color corLinhaCidade = Color.FromArgb(51, 77, 201);
-        Color corCidade = Color.Black;
-        Color corLinhaCaminho = Color.Red;
+        #region Constantes
+        static Color corNo = Color.Blue;
+        static Color corLinhaArvore = Color.Red;
+        static Color corLinhaCidade = Color.FromArgb(51, 77, 201);
+        static Color corCidade = Color.Black;
+        static Color corLinhaCaminho = Color.Red;
         const int DIAMETRO_NO = 30;
         const int DIAMETRO_CIDADE = 10;
-        int[] caminhoAtual;
         #endregion
-
-        public Graphics Gfx { set => gfx = value; }
-        public int[] CaminhoAtual { set => caminhoAtual = value; }
-        public Desenhador(ref PictureBox p, ArvoreBinaria<Cidade> a)
+        public static void DesenhaLinha(Graphics gfx, Control pb, Cidade um, Cidade dois, bool comSeta)
         {
-            gif = new Bitmap("../../Imagens/cidadeDestino.gif");
-            ImageAnimator.Animate(gif, DrawFrame);
-            pb = p;
-            arvore = a;
-        }
-        public void DesenhaLinha(int cod1, int cod2)
-        {
-            Cidade um = arvore.Buscar(new Cidade(cod1));
-            Cidade dois = arvore.Buscar(new Cidade(cod2));
             var caneta = new Pen(corLinhaCidade, 2.5f);
             AdjustableArrowCap bigArrow = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2);
             Point p1 = new Point(pb.Size.Width * um.X / 4096, pb.Size.Height * um.Y / 2048);
             Point p2 = new Point(pb.Size.Width * dois.X / 4096, pb.Size.Height * dois.Y / 2048);
-            if (um.Nome == "Gondor" && (dois.Nome == "Arrakeen" || dois.Nome == "Senzeni Na"))
-            {
-                gfx.DrawLine(caneta, p1.X, p1.Y, pb.Size.Width - 1, p2.Y);
+            if (comSeta)
                 caneta.CustomEndCap = bigArrow;
-                gfx.DrawLine(caneta, 0, p2.Y, p2.X, p2.Y);
-            }
-            else if (dois.Nome == "Gondor" && (um.Nome == "Arrakeen" || um.Nome == "Senzeni Na"))
-            {
-                gfx.DrawLine(caneta, 0, p1.Y, p1.X, p1.Y);
-                caneta.CustomEndCap = bigArrow;
-                gfx.DrawLine(caneta, pb.Size.Width - 1, p1.Y, p2.X, p2.Y);
-            }
-            else
-            {
-                caneta.CustomEndCap = bigArrow;
-                gfx.DrawLine(caneta, p1, p2);
-            }
+            gfx.DrawLine(caneta, p1, p2);
         }
-        public void DesenhaCidade(Cidade c, bool origem, bool destino)
+        public static void DesenhaLinha(Graphics gfx, Control pb, float x1, float y1, float x2, float y2, bool comSeta)
+        {
+            var caneta = new Pen(corLinhaCidade, 2.5f);
+            AdjustableArrowCap bigArrow = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2);
+            PointF p1 = new PointF(pb.Size.Width * x1 / 4096, pb.Size.Height * y1 / 2048);
+            PointF p2 = new PointF(pb.Size.Width * x2 / 4096, pb.Size.Height * y2 / 2048);
+            if (comSeta)
+                caneta.CustomEndCap = bigArrow;
+            gfx.DrawLine(caneta, p1, p2);
+        }
+        public static void DesenhaLinha(Graphics gfx, Control pb, Cidade um, float x2, float y2, bool comSeta)
+        {
+            var caneta = new Pen(corLinhaCidade, 2.5f);
+            AdjustableArrowCap bigArrow = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2);
+            PointF p1 = new PointF(pb.Size.Width * um.X / 4096, pb.Size.Height * um.Y / 2048);
+            PointF p2 = new PointF(pb.Size.Width * x2 / 4096, pb.Size.Height * y2 / 2048);
+            if (comSeta)
+                caneta.CustomEndCap = bigArrow;
+            gfx.DrawLine(caneta, p1, p2);
+        }
+        public static void DesenhaLinha(Graphics gfx, Control pb, float x1, float y1, Cidade dois, bool comSeta)
+        {
+            var caneta = new Pen(corLinhaCidade, 2.5f);
+            AdjustableArrowCap bigArrow = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2);
+            PointF p1 = new PointF(pb.Size.Width * x1 / 4096, pb.Size.Height * y1 / 2048);
+            PointF p2 = new PointF(pb.Size.Width * dois.X / 4096, pb.Size.Height * dois.Y / 2048);
+            if (comSeta)
+                caneta.CustomEndCap = bigArrow;
+            gfx.DrawLine(caneta, p1, p2);
+        }
+        public static void DesenhaLinha(Graphics gfx, Control pb, PointF p1, float x2, float y2, bool comSeta)
+        {
+            var caneta = new Pen(corLinhaCidade, 2.5f);
+            AdjustableArrowCap bigArrow = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2);
+            PointF p2 = new PointF(pb.Size.Width * x2 / 4096, pb.Size.Height * y2 / 2048);
+            if (comSeta)
+                caneta.CustomEndCap = bigArrow;
+            gfx.DrawLine(caneta, p1, p2);
+        }
+        public static void DesenhaLinha(Graphics gfx, Control pb, float x1, float y1, PointF p2, bool comSeta)
+        {
+            var caneta = new Pen(corLinhaCidade, 2.5f);
+            AdjustableArrowCap bigArrow = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2);
+            PointF p1 = new PointF(pb.Size.Width * x1 / 4096, pb.Size.Height * y1 / 2048);
+            if (comSeta)
+                caneta.CustomEndCap = bigArrow;
+            gfx.DrawLine(caneta, p1, p2);
+        }
+        public static void DesenhaLinha(Graphics gfx, Control pb, PointF p1, PointF p2, bool comSeta)
+        {
+            var caneta = new Pen(corLinhaCidade, 2.5f);
+            AdjustableArrowCap bigArrow = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2);
+            if (comSeta)
+                caneta.CustomEndCap = bigArrow;
+            gfx.DrawLine(caneta, p1, p2);
+        }
+        public static void DesenhaCidade(Graphics gfx, Control pb, Cidade c, bool origem, bool destino)
         {
             int x = pb.Size.Width * c.X / 4096 - DIAMETRO_CIDADE / 2;
             int y = pb.Size.Height * c.Y / 2048 - DIAMETRO_CIDADE / 2;
@@ -71,6 +96,8 @@ namespace apCaminhosMarte
                 gfx.DrawImage(Image.FromFile("../../Imagens/cidadeOrigem.png"), x - DIAMETRO_CIDADE * 1.5f, y - DIAMETRO_CIDADE * 3.5f, DIAMETRO_CIDADE * 4, DIAMETRO_CIDADE * 4);
             if (destino)
             {
+                Bitmap gif = new Bitmap("../../Imagens/cidadeDestino.gif");
+                ImageAnimator.Animate(gif, (object sender, EventArgs e) => { pb.Invalidate(); });
                 ImageAnimator.UpdateFrames(gif);
                 using (Bitmap bmp = new Bitmap(gif.Width, gif.Height))
                 {
@@ -82,7 +109,7 @@ namespace apCaminhosMarte
                 }
             }
         }
-        private void DesenhaLinhaAnimada(Pen caneta, Point p1, Point p2)
+        private static void DesenhaLinhaAnimada(Graphics gfx, Pen caneta, Point p1, Point p2)
         {
             int qtdPassos = 0;
             int duracao = 500;
@@ -112,32 +139,29 @@ namespace apCaminhosMarte
             }
             Tick();
         }
-        private void DrawFrame(object sender, EventArgs e)
+        public static void DesenhaCaminho(Graphics gfx, Control c, List<Cidade> caminhoAtual)
         {
-            pb.Invalidate();
-        }
-        public void DesenhaCaminho(Caminho caminhoAtual)
-        {
-            Cidade c1;
-            Cidade c2;
-            var rota = caminhoAtual.Rota.ToArray();
-            for (int i = 1; i < rota.Length; i++)
+            Cidade anterior = caminhoAtual[0];
+            foreach (Cidade atual in caminhoAtual)
             {
-                c1 = arvore.Buscar(new Cidade(rota[i - 1]));
-                c2 = arvore.Buscar(new Cidade(rota[i]));
-                Point p1 = new Point(pb.Size.Width * c1.X / 4096, pb.Size.Height * c1.Y / 2048);
-                Point p2 = new Point(pb.Size.Width * c2.X / 4096, pb.Size.Height * c2.Y / 2048);
-                Pen caneta = new Pen(corLinhaCaminho, 3);
-                caneta.CustomEndCap = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2);
-                DesenhaLinhaAnimada(caneta, p1, p2);
+                if (!atual.Equals(anterior))
+                {
+                    Point p1 = new Point(c.Size.Width * anterior.X / 4096, c.Size.Height * anterior.Y / 2048);
+                    Point p2 = new Point(c.Size.Width * atual.X / 4096, c.Size.Height * atual.Y / 2048);
+                    Pen caneta = new Pen(corLinhaCaminho, 3);
+                    caneta.CustomEndCap = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2);
+                    // DesenhaLinhaAnimada(gfx, caneta, p1, p2);
+                    DesenhaLinha(gfx, c, anterior, atual, true);
+                    anterior = atual;
+                }
             }
         }
-        public void DesenharArvore(TabPage tpArvore)
+        public static void DesenharArvore(Graphics gfx, TabPage tpArvore, NoArvore<Cidade> raiz)
         {
-            DesenhaArvore(true, arvore.Raiz, (int)tpArvore.Width / 2, 0, Math.PI / 2,
+            DesenhaArvore(true, raiz, (int)tpArvore.Width / 2, 0, Math.PI / 2,
                                  Math.PI / 2.5, 450, gfx);
         }
-        private void DesenhaArvore(bool primeiraVez, NoArvore<Cidade> raiz,
+        private static void DesenhaArvore(bool primeiraVez, NoArvore<Cidade> raiz,
                    int x, int y, double angulo, double incremento,
                    double comprimento, Graphics g)
         {

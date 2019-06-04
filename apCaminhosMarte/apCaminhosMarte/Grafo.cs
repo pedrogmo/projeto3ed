@@ -60,7 +60,7 @@ namespace apCaminhosMarte
                     inversa.Empilhar(destino);
                     inversa.Empilhar(cidadeAtual);
                     while (!pilha.EstaVazia())
-                        inversa.Empilhar(pilha.Desempilhar());                    
+                        inversa.Empilhar(pilha.Desempilhar());
                     int origemDaInversa = inversa.Desempilhar();
                     pilha.Empilhar(origemDaInversa);
                     var caminho = new Caminho(origemDaInversa);
@@ -83,7 +83,7 @@ namespace apCaminhosMarte
                     //Achou cidade para sair
                     {
                         pilha.Empilhar(cidadeAtual);
-                        cidadeAtual = ind;                        
+                        cidadeAtual = ind;
                         haSaida = true;
                     }
                     ++ind;

@@ -21,7 +21,6 @@ namespace apCaminhosMarte
         int qtdCidades;
         Grafo grafo;
         List<Caminho> possibilidades;
-        Desenhador desenhador;
         Caminho caminhoAtual;
 
         public Form1()
@@ -39,7 +38,6 @@ namespace apCaminhosMarte
                 ++qtdCidades;
             }
             leitorCidades.Close();
-            desenhador = new Desenhador(ref pbMapa, arvore);
             qtdCidades = arvore.Tamanho;
 
             arvore.InOrdem((Cidade c) =>
@@ -109,7 +107,6 @@ namespace apCaminhosMarte
                     foreach (int cidade in melhor.Rota)
                         dgvMelhorCaminho.Rows[0].Cells[c++].Value = arvore.Buscar(new Cidade(cidade));
                     caminhoAtual = melhor;
-                    //desenhador.DesenhaCaminho(melhor.Rota.ToArray());
                     MessageBox.Show("Caminhos foram encontrados, clique em algum deles para visualizar", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
@@ -117,45 +114,55 @@ namespace apCaminhosMarte
 
         private void pbMapa_Paint(object sender, PaintEventArgs e)
         {
-            desenhador.Gfx = e.Graphics;
+            Graphics gfx = e.Graphics;
             for (int l = 0; l < qtdCidades; ++l)
                 for (int c = 0; c < qtdCidades; ++c)
                     if (grafo.DistanciaEntre(l, c) != 0)
-                        desenhador.DesenhaLinha(l, c);
+                    {
+                        Cidade um = arvore.Buscar(new Cidade(l));
+                        Cidade dois = arvore.Buscar(new Cidade(c));
+                        if (dois.Nome == "Gondor" && um.Nome == "Arrakeen") //um.Nome == "Senzeni Na"
+                        {
+                            Desenhador.DesenhaLinha(gfx, pbMapa, 0, um.Y + (dois.Y - um.Y), um, false);
+                            Desenhador.DesenhaLinha(gfx, pbMapa, 4095, um.Y + (dois.Y - um.Y), dois, true);
+                        }
+                        else if (dois.Nome == "Gondor" && um.Nome == "Senzeni Na")
+                        {
+                            Desenhador.DesenhaLinha(gfx, pbMapa, 0, um.Y - (dois.Y - um.Y), um, false);
+                            Desenhador.DesenhaLinha(gfx, pbMapa, 4095, um.Y - (dois.Y - um.Y), dois, true);
+                        }
+                        else
+                            Desenhador.DesenhaLinha(gfx, pbMapa, um, dois, true);
+                    }
+            if (caminhoAtual != null)
+            {
+                List<Cidade> caminho = new List<Cidade>();
+                foreach (int i in caminhoAtual.Rota)
+                    caminho.Add(new Cidade(i));
+                Desenhador.DesenhaCaminho(gfx, pbMapa, caminho);
+            }
             int origem = lsbOrigem.SelectedIndex;
             int destino = lsbDestino.SelectedIndex;
             arvore.InOrdem((Cidade c) =>
             {
-                desenhador.DesenhaCidade(c, c.Codigo == origem, c.Codigo == destino);
+                Desenhador.DesenhaCidade(gfx, pbMapa, c, c.Codigo == origem, c.Codigo == destino);
             });
-            if (caminhoAtual != null)
-            {
-                desenhador.DesenhaCaminho(caminhoAtual);
-                /*Cidade c1;
-                Cidade c2;
-                for (int i = 1; i < caminhoAtual.Length; i++)
-                {
-                    c1 = arvore.Buscar(new Cidade(caminhoAtual[i - 1]));
-                    c2 = arvore.Buscar(new Cidade(caminhoAtual[i]));
-                    Point p1 = new Point(pbMapa.Size.Width * c1.X / 4096, pbMapa.Size.Height * c1.Y / 2048);
-                    Point p2 = new Point(pbMapa.Size.Width * c2.X / 4096, pbMapa.Size.Height * c2.Y / 2048);
-                    Pen caneta = new Pen(corLinhaCaminho, 3);
-                    caneta.CustomEndCap = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2);
-                    DesenhaLinhaAnimada(gfx, caneta, p1, p2);
-                }*/ 
-            }
         }
 
         private void tpArvore_Paint(object sender, PaintEventArgs e)
         {
-            desenhador.Gfx = e.Graphics;
-            desenhador.DesenharArvore(tpArvore);
+            Desenhador.DesenharArvore(e.Graphics, tpArvore, arvore.Raiz);
         }
 
         private void dgvCaminhos_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             int index = e.RowIndex;
             caminhoAtual = possibilidades[index];
+        }
+
+        private void lsbOrigem_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            caminhoAtual = null;
         }
     }
 }

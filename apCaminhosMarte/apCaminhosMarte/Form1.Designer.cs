@@ -160,6 +160,7 @@
             this.lsbDestino.Name = "lsbDestino";
             this.lsbDestino.Size = new System.Drawing.Size(177, 84);
             this.lsbDestino.TabIndex = 3;
+            this.lsbDestino.SelectedIndexChanged += new System.EventHandler(this.lsbOrigem_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -181,6 +182,7 @@
             this.lsbOrigem.Name = "lsbOrigem";
             this.lsbOrigem.Size = new System.Drawing.Size(177, 84);
             this.lsbOrigem.TabIndex = 1;
+            this.lsbOrigem.SelectedIndexChanged += new System.EventHandler(this.lsbOrigem_SelectedIndexChanged);
             // 
             // pbMapa
             // 
