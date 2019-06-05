@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace apCaminhosMarte
 {
-    class NoArvore<T> where T : IComparable<T>
+    public class NoArvore<T> where T : IComparable<T>
     {
         //Felipe Scherer Vicentin (18178)
         //Pedro Gomes Moreira (18174)

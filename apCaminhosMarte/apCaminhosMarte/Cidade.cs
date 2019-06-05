@@ -8,7 +8,7 @@ namespace apCaminhosMarte
 {
     //Felipe Scherer Vicentin (18178)
     //Pedro Gomes Moreira (18174)
-    class Cidade : IComparable<Cidade>
+    public class Cidade : IComparable<Cidade>
     {
         protected int codigo, x, y;
         protected string nome;
