@@ -275,9 +275,9 @@ namespace apCaminhosMarte
 
         public T Buscar(T dado)
         {
-            var NoArvore = BuscarNo(dado);
-            if (NoArvore != null)
-                return NoArvore.Info;
+            var noArvore = BuscarNo(dado);
+            if (noArvore != null)
+                return noArvore.Info;
             return default(T);
         }
 
