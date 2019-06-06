@@ -24,19 +24,7 @@ namespace apCaminhosMarte
         public ArvoreBinaria(ArvoreBinaria<T> outra)
         {
             raiz = outra.raiz;
-        }
-
-        public ArvoreBinaria(T[] v)
-        {
-            foreach (T t in v)
-                Inserir(t);
-        }
-
-        public ArvoreBinaria(IEnumerable<T> l)
-        {
-            foreach (T t in l)
-                Inserir(t);
-        }
+        }        
 
         public bool EstaVazia
         {

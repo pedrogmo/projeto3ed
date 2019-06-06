@@ -11,33 +11,20 @@ namespace apCaminhosMarte
     {       
         protected No<T> inicio, fim;
         protected int qtd;
+
         public Fila()
         {
             inicio = fim = null;
             qtd = 0;
-        }
-        public Fila(T dado)
-        {
-            qtd = 1;
-            Enfileirar(dado);
-        }
-        public Fila(T[] array)
-        {
-            qtd = array.Length;
-            for (int i = 0; i < qtd; i++)
-                Enfileirar(array[i]);
-        }
-        public Fila(IEnumerable<T> lista)
-        {
-            qtd = lista.Count();
-            foreach (T dado in lista)
-                Enfileirar(dado);
-        }
+        }  
+        
         public int Tamanho { get => qtd; }
+
         public bool EstaVazia()
         {
             return inicio == null;
         }
+
         public void Enfileirar(T dado)
         {
             No<T> no = new No<T>(dado, null);
@@ -46,8 +33,9 @@ namespace apCaminhosMarte
             else
                 fim.Prox = no;
             fim = no;
-            qtd++;
+            ++qtd;
         }
+
         public T Retirar()
         {
             if (EstaVazia())
@@ -56,9 +44,10 @@ namespace apCaminhosMarte
             inicio = inicio.Prox;
             if (inicio == null)
                 fim = null;
-            qtd--;
+            --qtd;
             return ret;
         }
+
         public T Inicio
         {
             get
@@ -68,6 +57,7 @@ namespace apCaminhosMarte
                 return inicio.Info;
             }
         }
+
         public T Fim
         {
             get

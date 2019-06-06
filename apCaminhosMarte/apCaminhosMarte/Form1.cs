@@ -141,7 +141,7 @@ namespace apCaminhosMarte
             caminhoAtual = null;
         }
 
-        public void DrawFrame(object sender, EventArgs e)
+        private void DrawFrame(object sender, EventArgs e)
         {
             pbMapa.Invalidate();
         }
@@ -197,7 +197,7 @@ namespace apCaminhosMarte
             });
         }
 
-        public void DesenhaCidade(Graphics gfx, Cidade c, bool origem, bool destino)
+        private void DesenhaCidade(Graphics gfx, Cidade c, bool origem, bool destino)
         {
             int x = pbMapa.Size.Width * c.X / LARGURA - DIAMETRO_CIDADE / 2;
             int y = pbMapa.Size.Height * c.Y / ALTURA - DIAMETRO_CIDADE / 2;
@@ -219,7 +219,7 @@ namespace apCaminhosMarte
             }
         }
 
-        public void DesenhaDistancia (Graphics gfx, Point ponto1, Point ponto2, int dist)
+        private void DesenhaDistancia (Graphics gfx, Point ponto1, Point ponto2, int dist)
         {            
             float xString = 0, yString = 0;
             if (ponto1.X < ponto2.X)
@@ -233,7 +233,7 @@ namespace apCaminhosMarte
             gfx.DrawString(dist + "", new Font("Century Gothic", 8, FontStyle.Bold), new SolidBrush(corCidade), xString, yString);
         }
 
-        public void DesenhaLinha(Graphics gfx, Cidade um, Cidade dois, bool comSeta)
+        private void DesenhaLinha(Graphics gfx, Cidade um, Cidade dois, bool comSeta)
         {
             var caneta = new Pen(corLinhaCidade, 2.5f);
             AdjustableArrowCap bigArrow = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2);
@@ -243,19 +243,22 @@ namespace apCaminhosMarte
                 caneta.CustomEndCap = bigArrow;
             gfx.DrawLine(caneta, p1, p2);
         }
-        public void DesenhaLinha(Graphics gfx, Pen caneta, Cidade um, Cidade dois, bool comSeta)
+
+        private void DesenhaLinha(Graphics gfx, Pen caneta, Cidade um, Cidade dois, bool comSeta)
         {
             Point p1 = new Point(pbMapa.Size.Width * um.X / LARGURA, pbMapa.Size.Height * um.Y / ALTURA);
             Point p2 = new Point(pbMapa.Size.Width * dois.X / LARGURA, pbMapa.Size.Height * dois.Y / ALTURA);
             gfx.DrawLine(caneta, p1, p2);
         }
-        public void DesenhaLinha(Graphics gfx, Pen caneta, Cidade um, Cidade dois)
+
+        private void DesenhaLinha(Graphics gfx, Pen caneta, Cidade um, Cidade dois)
         {
             Point p1 = new Point(pbMapa.Size.Width * um.X / LARGURA, pbMapa.Size.Height * um.Y / ALTURA);
             Point p2 = new Point(pbMapa.Size.Width * dois.X / LARGURA, pbMapa.Size.Height * dois.Y / ALTURA);
             gfx.DrawLine(caneta, p1, p2);
         }
-        public void DesenhaLinha(Graphics gfx, float x1, float y1, float x2, float y2, bool comSeta)
+
+        private void DesenhaLinha(Graphics gfx, float x1, float y1, float x2, float y2, bool comSeta)
         {
             var caneta = new Pen(corLinhaCidade, 2.5f);
             AdjustableArrowCap bigArrow = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2);
@@ -265,7 +268,8 @@ namespace apCaminhosMarte
                 caneta.CustomEndCap = bigArrow;
             gfx.DrawLine(caneta, p1, p2);
         }
-        public void DesenhaLinha(Graphics gfx, Cidade um, float x2, float y2, bool comSeta)
+
+        private void DesenhaLinha(Graphics gfx, Cidade um, float x2, float y2, bool comSeta)
         {
             var caneta = new Pen(corLinhaCidade, 2.5f);
             AdjustableArrowCap bigArrow = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2);
@@ -275,7 +279,8 @@ namespace apCaminhosMarte
                 caneta.CustomEndCap = bigArrow;
             gfx.DrawLine(caneta, p1, p2);
         }
-        public void DesenhaLinha(Graphics gfx, float x1, float y1, Cidade dois, bool comSeta)
+
+        private void DesenhaLinha(Graphics gfx, float x1, float y1, Cidade dois, bool comSeta)
         {
             var caneta = new Pen(corLinhaCidade, 2.5f);
             AdjustableArrowCap bigArrow = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2);
@@ -285,7 +290,8 @@ namespace apCaminhosMarte
                 caneta.CustomEndCap = bigArrow;
             gfx.DrawLine(caneta, p1, p2);
         }
-        public void DesenhaLinha(Graphics gfx, PointF p1, float x2, float y2, bool comSeta)
+
+        private void DesenhaLinha(Graphics gfx, PointF p1, float x2, float y2, bool comSeta)
         {
             var caneta = new Pen(corLinhaCidade, 2.5f);
             AdjustableArrowCap bigArrow = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2);
@@ -294,7 +300,8 @@ namespace apCaminhosMarte
                 caneta.CustomEndCap = bigArrow;
             gfx.DrawLine(caneta, p1, p2);
         }
-        public void DesenhaLinha(Graphics gfx, float x1, float y1, PointF p2, bool comSeta)
+
+        private void DesenhaLinha(Graphics gfx, float x1, float y1, PointF p2, bool comSeta)
         {
             var caneta = new Pen(corLinhaCidade, 2.5f);
             AdjustableArrowCap bigArrow = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2);
@@ -303,7 +310,8 @@ namespace apCaminhosMarte
                 caneta.CustomEndCap = bigArrow;
             gfx.DrawLine(caneta, p1, p2);
         }
-        public void DesenhaLinha(Graphics gfx, PointF p1, PointF p2, bool comSeta)
+
+        private void DesenhaLinha(Graphics gfx, PointF p1, PointF p2, bool comSeta)
         {
             var caneta = new Pen(corLinhaCidade, 2.5f);
             AdjustableArrowCap bigArrow = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2);
@@ -347,7 +355,8 @@ namespace apCaminhosMarte
             tmr.Tick += (object sender, EventArgs e) => { Tick(pbMapa.CreateGraphics()); };
             tmr.Start();
         }
-        public void DesenhaCaminho(Graphics gfx, List<Cidade> caminhoAtual)
+
+        private void DesenhaCaminho(Graphics gfx, List<Cidade> caminhoAtual)
         {
             Cidade anterior = caminhoAtual[0];
             int indice = 0;
@@ -372,11 +381,13 @@ namespace apCaminhosMarte
                 }
             }
         }
-        public void DesenharArvore(Graphics gfx, TabPage tpArvore, NoArvore<Cidade> raiz)
+
+        private void DesenharArvore(Graphics gfx, TabPage tpArvore, NoArvore<Cidade> raiz)
         {
             DesenhaArvore(true, raiz, (int)tpArvore.Width / 2, 0, Math.PI / 2,
                                  Math.PI / 2.5, 450, gfx);
         }
+
         private void DesenhaArvore(bool primeiraVez, NoArvore<Cidade> raiz,
                    int x, int y, double angulo, double incremento,
                    double comprimento, Graphics g)
