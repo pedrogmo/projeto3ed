@@ -62,7 +62,8 @@ namespace apCaminhosMarte
                     while (!pilha.EstaVazia())
                         inversa.Empilhar(pilha.Desempilhar());
                     int origemDaInversa = inversa.Desempilhar();
-                    pilha.Empilhar(origemDaInversa);
+                   // if (origemDaInversa != origem)
+                        pilha.Empilhar(origemDaInversa);
                     var caminho = new Caminho(origemDaInversa);
                     while (!inversa.EstaVazia())
                     {
@@ -72,7 +73,7 @@ namespace apCaminhosMarte
                             pilha.Empilhar(codCidadeSaida);
                     }
                     ret.Add(caminho);
-                    pilha.Desempilhar();
+                    //pilha.Desempilhar();
                 }
                 jaPassou[cidadeAtual] = true;
                 int ind = 0;
@@ -82,7 +83,13 @@ namespace apCaminhosMarte
                     if (matriz[cidadeAtual, ind] != 0 && !jaPassou[ind])
                     //Achou cidade para sair
                     {
-                        pilha.Empilhar(cidadeAtual);
+                        if (cidadeAtual == origem)
+                        {
+                            if (pilha.EstaVazia())
+                                pilha.Empilhar(cidadeAtual);
+                        }
+                        else
+                            pilha.Empilhar(cidadeAtual);
                         cidadeAtual = ind;
                         haSaida = true;
                     }

@@ -80,6 +80,9 @@ namespace apCaminhosMarte
 
         private void BtnBuscar_Click(object sender, EventArgs e)
         {
+            dgvCaminhos.Rows.Clear();
+            dgvMelhorCaminho.Rows.Clear();
+
             if (lsbOrigem.SelectedIndex == -1)
                 MessageBox.Show("Selecione uma cidade de origem", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             else if (lsbDestino.SelectedIndex == -1)
@@ -134,8 +137,11 @@ namespace apCaminhosMarte
         private void dgvCaminhos_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             int index = e.RowIndex;
-            jaDesenhouCaminhoAtual = new bool[caminhoAtual.Rota.Count];
-            caminhoAtual = possibilidades[index];
+            if (index >= 0)
+            {
+                jaDesenhouCaminhoAtual = new bool[caminhoAtual.Rota.Count];
+                caminhoAtual = possibilidades[index];
+            }
         }
 
         private void lsbOrigem_SelectedIndexChanged(object sender, EventArgs e)
@@ -186,15 +192,21 @@ namespace apCaminhosMarte
                 }
             if (caminhoAtual != null)
             {
-                int indiceCaminho = 0;
+                List<Cidade> caminho = new List<Cidade>();
                 foreach (Caminho c in possibilidades)
                 {
-                    List<Cidade> caminho = new List<Cidade>();
-                    foreach (int i in c.Rota)
-                        caminho.Add(arvore.Buscar(new Cidade(i)));
-                    DesenhaCaminho(gfx, caminho, caminhoAtual==c);
-                    ++indiceCaminho;
+                    if (c != caminhoAtual)
+                    {
+                        caminho = new List<Cidade>();
+                        foreach (int i in c.Rota)
+                            caminho.Add(arvore.Buscar(new Cidade(i)));
+                        DesenhaCaminho(gfx, caminho, false);
+                    }
                 }
+                caminho = new List<Cidade>();
+                foreach (int i in caminhoAtual.Rota)
+                    caminho.Add(arvore.Buscar(new Cidade(i)));
+                DesenhaCaminho(gfx, caminho, true);
             }
             int origem = lsbOrigem.SelectedIndex;
             int destino = lsbDestino.SelectedIndex;
@@ -380,11 +392,10 @@ namespace apCaminhosMarte
             Cidade anterior = caminhoAtual[0];
             int indice = 0;
             foreach (Cidade atual in caminhoAtual)
-            {
+            {                
                 Pen caneta = new Pen(selecionado ? corLinhaCaminhoSelecionado : corLinhaCaminho, 3);
                 if (!atual.Equals(anterior))
                 {
-                    indice++;
                     Point p1 = new Point(pbMapa.Size.Width * anterior.X / LARGURA, pbMapa.Size.Height * anterior.Y / ALTURA);
                     Point p2 = new Point(pbMapa.Size.Width * atual.X / LARGURA, pbMapa.Size.Height * atual.Y / ALTURA);
                     /*bool jaDesenhou = true;
@@ -411,6 +422,7 @@ namespace apCaminhosMarte
 
                     anterior = atual;
                 }
+                ++indice;
             }
         }
 
