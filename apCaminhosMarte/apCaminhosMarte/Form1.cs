@@ -298,6 +298,16 @@ namespace apCaminhosMarte
             gfx.DrawLine(caneta, p1, p2);
         }
 
+        private void DesenhaLinha(Graphics gfx, Pen caneta, float x1, float y1, Cidade dois, bool comSeta)
+        {
+            AdjustableArrowCap bigArrow = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2);
+            PointF p1 = new PointF(pbMapa.Size.Width * x1 / LARGURA, pbMapa.Size.Height * y1 / ALTURA);
+            PointF p2 = new PointF(pbMapa.Size.Width * dois.X / LARGURA, pbMapa.Size.Height * dois.Y / ALTURA);
+            if (comSeta)
+                caneta.CustomEndCap = bigArrow;
+            gfx.DrawLine(caneta, p1, p2);
+        }
+
         private void DesenhaLinha(Graphics gfx, PointF p1, float x2, float y2, bool comSeta)
         {
             var caneta = new Pen(corLinhaCidade, 2.5f);
@@ -367,23 +377,37 @@ namespace apCaminhosMarte
         {
             Cidade anterior = caminhoAtual[0];
             int indice = 0;
-            Pen caneta = new Pen(selecionado ? corLinhaCaminhoSelecionado : corLinhaCaminho, 3);
-            caneta.CustomEndCap = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2);
+            var seta = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2); ;
             foreach (Cidade atual in caminhoAtual)
             {
+                Pen caneta = new Pen(selecionado ? corLinhaCaminhoSelecionado : corLinhaCaminho, 3);
                 if (!atual.Equals(anterior))
                 {
                     indice++;
                     Point p1 = new Point(pbMapa.Size.Width * anterior.X / LARGURA, pbMapa.Size.Height * anterior.Y / ALTURA);
-                    Point p2 = new Point(pbMapa.Size.Width * atual.X / LARGURA, pbMapa.Size.Height * atual.Y / ALTURA);                    
+                    Point p2 = new Point(pbMapa.Size.Width * atual.X / LARGURA, pbMapa.Size.Height * atual.Y / ALTURA);
                     /*bool jaDesenhou = true;
                     foreach (bool d in jaDesenhouCaminhoAtual)
                         if (!d)
                             jaDesenhou = false;
-                    /if (jaDesenhou)*/
-                        DesenhaLinha(gfx, caneta, anterior, atual, true);
-                    /*else
+                    if (jaDesenhou)
+                        DesenhaLinha(gfx, caneta, anterior, atual, true);                    
+                    else
                         DesenhaLinhaAnimada(gfx, caneta, p1, p2, indice);*/
+
+                    if (atual.Nome == "Gondor" && anterior.Nome == "Arrakeen") //anterior.Nome == "Senzeni Na"
+                    {
+                        DesenhaLinha(gfx, caneta, 0, anterior.Y + DIST_CIDADES, anterior, false);
+                        DesenhaLinha(gfx, caneta, LARGURA - 1, anterior.Y + DIST_CIDADES, atual, true);
+                    }
+                    else if (atual.Nome == "Gondor" && anterior.Nome == "Senzeni Na")
+                    {
+                        DesenhaLinha(gfx, caneta, 0, anterior.Y - DIST_CIDADES, anterior, false);
+                        DesenhaLinha(gfx, caneta, LARGURA - 1, anterior.Y - DIST_CIDADES, atual, true);
+                    }
+                    else
+                        DesenhaLinha(gfx, caneta, anterior, atual, true);
+
                     anterior = atual;
                 }
             }
