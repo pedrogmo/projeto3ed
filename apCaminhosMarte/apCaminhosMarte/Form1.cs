@@ -255,6 +255,8 @@ namespace apCaminhosMarte
         {
             Point p1 = new Point(pbMapa.Size.Width * um.X / LARGURA, pbMapa.Size.Height * um.Y / ALTURA);
             Point p2 = new Point(pbMapa.Size.Width * dois.X / LARGURA, pbMapa.Size.Height * dois.Y / ALTURA);
+            if (comSeta)
+                caneta.CustomEndCap = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2);
             gfx.DrawLine(caneta, p1, p2);
         }
 
@@ -377,7 +379,6 @@ namespace apCaminhosMarte
         {
             Cidade anterior = caminhoAtual[0];
             int indice = 0;
-            var seta = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2); ;
             foreach (Cidade atual in caminhoAtual)
             {
                 Pen caneta = new Pen(selecionado ? corLinhaCaminhoSelecionado : corLinhaCaminho, 3);
