@@ -24,7 +24,8 @@ namespace apCaminhosMarte
         Color corLinhaArvore = Color.Red;
         Color corLinhaCidade = Color.FromArgb(51, 77, 201);
         Color corCidade = Color.Black;
-        Color corLinhaCaminho = Color.Red;
+        Color corLinhaCaminho = Color.Purple; //para caminhos possíveis
+        Color corLinhaCaminhoSelecionado = Color.Red; //para caminho selecionado        
         const int DIAMETRO_NO = 30;
         const int DIAMETRO_CIDADE = 10;
         const int LARGURA = 4096;
@@ -103,6 +104,7 @@ namespace apCaminhosMarte
                             dgvCaminhos.Rows[l].Cells[c++].Value = arvore.Buscar(new Cidade(cidade));
                         ++l;
                     }
+
                     dgvMelhorCaminho.RowCount = 1;
                     dgvMelhorCaminho.ColumnCount = qtdCidades;
                     Caminho melhor = null;
@@ -117,7 +119,7 @@ namespace apCaminhosMarte
                     c = 0;
                     foreach (int cidade in melhor.Rota)
                         dgvMelhorCaminho.Rows[0].Cells[c++].Value = arvore.Buscar(new Cidade(cidade));
-                    caminhoAtual = melhor;
+                    caminhoAtual = possibilidades[0];
                     jaDesenhouCaminhoAtual = new bool[caminhoAtual.Rota.Count];
                     MessageBox.Show("Caminhos foram encontrados, clique em algum deles para visualizar", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -184,10 +186,15 @@ namespace apCaminhosMarte
                 }
             if (caminhoAtual != null)
             {
-                List<Cidade> caminho = new List<Cidade>();
-                foreach (int i in caminhoAtual.Rota)
-                    caminho.Add(arvore.Buscar(new Cidade(i)));
-                DesenhaCaminho(gfx, caminho);
+                int indiceCaminho = 0;
+                foreach (Caminho c in possibilidades)
+                {
+                    List<Cidade> caminho = new List<Cidade>();
+                    foreach (int i in c.Rota)
+                        caminho.Add(arvore.Buscar(new Cidade(i)));
+                    DesenhaCaminho(gfx, caminho, caminhoAtual==c);
+                    ++indiceCaminho;
+                }
             }
             int origem = lsbOrigem.SelectedIndex;
             int destino = lsbDestino.SelectedIndex;
@@ -342,7 +349,7 @@ namespace apCaminhosMarte
                     double x = qtdPassos * tamanhoPasso;
                     double y = angulo * x;
                     x = b < 0 ? x * -1 : x;
-                    gfxT.DrawLine(new Pen(corLinhaCaminho, 3), p1, new PointF(Convert.ToSingle(x + p1.X), Convert.ToSingle(p1.Y - y)));
+                    gfxT.DrawLine(new Pen(corLinhaCaminhoSelecionado, 3), p1, new PointF(Convert.ToSingle(x + p1.X), Convert.ToSingle(p1.Y - y)));
                     if (qtdPassos * tamanhoPasso > Math.Abs(b))
                     {
                         acabou = true;
@@ -356,27 +363,27 @@ namespace apCaminhosMarte
             tmr.Start();
         }
 
-        private void DesenhaCaminho(Graphics gfx, List<Cidade> caminhoAtual)
+        private void DesenhaCaminho(Graphics gfx, List<Cidade> caminhoAtual, bool selecionado)
         {
             Cidade anterior = caminhoAtual[0];
             int indice = 0;
+            Pen caneta = new Pen(selecionado ? corLinhaCaminhoSelecionado : corLinhaCaminho, 3);
+            caneta.CustomEndCap = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2);
             foreach (Cidade atual in caminhoAtual)
             {
                 if (!atual.Equals(anterior))
                 {
                     indice++;
                     Point p1 = new Point(pbMapa.Size.Width * anterior.X / LARGURA, pbMapa.Size.Height * anterior.Y / ALTURA);
-                    Point p2 = new Point(pbMapa.Size.Width * atual.X / LARGURA, pbMapa.Size.Height * atual.Y / ALTURA);
-                    Pen caneta = new Pen(corLinhaCaminho, 3);
-                    caneta.CustomEndCap = new AdjustableArrowCap(DIAMETRO_CIDADE / 2, DIAMETRO_CIDADE / 2);
-                    bool jaDesenhou = true;
+                    Point p2 = new Point(pbMapa.Size.Width * atual.X / LARGURA, pbMapa.Size.Height * atual.Y / ALTURA);                    
+                    /*bool jaDesenhou = true;
                     foreach (bool d in jaDesenhouCaminhoAtual)
                         if (!d)
                             jaDesenhou = false;
-                    if (jaDesenhou)
+                    /if (jaDesenhou)*/
                         DesenhaLinha(gfx, caneta, anterior, atual, true);
-                    else
-                        DesenhaLinhaAnimada(gfx, caneta, p1, p2, indice);
+                    /*else
+                        DesenhaLinhaAnimada(gfx, caneta, p1, p2, indice);*/
                     anterior = atual;
                 }
             }
