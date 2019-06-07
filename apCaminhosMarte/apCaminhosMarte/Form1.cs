@@ -251,6 +251,8 @@ namespace apCaminhosMarte
                 yString = ponto1.Y + (ponto2.Y - ponto1.Y) / 2;
             else
                 yString = ponto2.Y + (ponto1.Y - ponto2.Y) / 2;
+            SizeF size = gfx.MeasureString(dist + "", new Font("Century Gothic", 8, FontStyle.Bold));
+            xString -= size.Width / 2;
             gfx.DrawString(dist + "", new Font("Century Gothic", 8, FontStyle.Bold), new SolidBrush(corCidade), xString, yString);
         }
 
