@@ -22,9 +22,9 @@ namespace apCaminhosMarte
         Bitmap gif;
         Color corNo = Color.Blue;
         Color corLinhaArvore = Color.Red;
-        Color corLinhaCidade = Color.FromArgb(51, 77, 201);
+        Color corLinhaCidade = Color.DarkSlateGray;
         Color corCidade = Color.Black;
-        Color corLinhaCaminho = Color.Purple; //para caminhos possíveis
+        Color corLinhaCaminho = Color.FromArgb(51, 77, 201); //para caminhos possíveis
         Color corLinhaCaminhoSelecionado = Color.Red; //para caminho selecionado        
         const int DIAMETRO_NO = 30;
         const int DIAMETRO_CIDADE = 10;
@@ -100,16 +100,19 @@ namespace apCaminhosMarte
                     dgvCaminhos.RowCount = possibilidades.Count;
                     dgvCaminhos.ColumnCount = qtdCidades;
                     int l = 0, c = 0;
+                    int maiorCaminho = 0;
                     foreach (Caminho caminho in possibilidades)
                     {
+                        if (caminho.Rota.Count > maiorCaminho)
+                            maiorCaminho = caminho.Rota.Count;
                         c = 0;
                         foreach (int cidade in caminho.Rota)
                             dgvCaminhos.Rows[l].Cells[c++].Value = arvore.Buscar(new Cidade(cidade));
                         ++l;
                     }
+                    dgvCaminhos.ColumnCount = maiorCaminho;
 
-                    dgvMelhorCaminho.RowCount = 1;
-                    dgvMelhorCaminho.ColumnCount = qtdCidades;
+                    dgvMelhorCaminho.RowCount = 1;                    
                     Caminho melhor = null;
                     int menorDist = int.MaxValue;
                     foreach (Caminho cam in possibilidades)
@@ -118,6 +121,7 @@ namespace apCaminhosMarte
                             menorDist = cam.DistanciaTotal;
                             melhor = cam;
                         }
+                    dgvMelhorCaminho.ColumnCount = melhor.Rota.Count;
 
                     c = 0;
                     foreach (int cidade in melhor.Rota)
