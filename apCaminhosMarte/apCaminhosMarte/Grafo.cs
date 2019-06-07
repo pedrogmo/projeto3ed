@@ -44,39 +44,47 @@ namespace apCaminhosMarte
             List<Caminho> ret = new List<Caminho>();
             Pilha<int> pilha = new Pilha<int>();
             bool fim = false;
-            int cidadeAtual = origem;
+            int cidadeAtual = origem, ind = 0;
 
             bool[] jaPassou = new bool[quantidade];
             for (int i = 0; i < quantidade; ++i)
                 jaPassou[i] = false;
-            jaPassou[destino] = true;
+
+            void Backtracking()
+            {
+                if (pilha.EstaVazia())
+                    fim = true;
+                else
+                {
+                    jaPassou[cidadeAtual] = false;
+                    ind = cidadeAtual + 1;
+                    cidadeAtual = pilha.Desempilhar();
+                }
+            }
 
             while (!fim)
             {
-                if (matriz[cidadeAtual, destino] != 0 && !jaPassou[cidadeAtual])
+                if (cidadeAtual == destino)
                 {
                     //Achou um caminho
                     var inversa = new Pilha<int>();
-                    inversa.Empilhar(destino);
                     inversa.Empilhar(cidadeAtual);
                     while (!pilha.EstaVazia())
                         inversa.Empilhar(pilha.Desempilhar());
                     int origemDaInversa = inversa.Desempilhar();
-                   // if (origemDaInversa != origem)
-                        pilha.Empilhar(origemDaInversa);
+                    pilha.Empilhar(origemDaInversa);
                     var caminho = new Caminho(origemDaInversa);
                     while (!inversa.EstaVazia())
                     {
                         int codCidadeSaida = inversa.Desempilhar();
                         caminho.AdicionarARota(codCidadeSaida, matriz[caminho.Rota[caminho.Rota.Count-1] , codCidadeSaida]);
-                        if (codCidadeSaida != destino && codCidadeSaida != cidadeAtual)
+                        if (codCidadeSaida != destino)
                             pilha.Empilhar(codCidadeSaida);
                     }
                     ret.Add(caminho);
-                    //pilha.Desempilhar();
+                    Backtracking();
                 }
                 jaPassou[cidadeAtual] = true;
-                int ind = 0;
                 bool haSaida = false;
                 while (!haSaida && ind < quantidade)
                 {
@@ -96,13 +104,10 @@ namespace apCaminhosMarte
                     ++ind;
                 }
                 if (!haSaida)
-                {
                     //Regressivo
-                    if (pilha.EstaVazia())
-                        fim = true;
-                    else
-                        cidadeAtual = pilha.Desempilhar();
-                }
+                    Backtracking();
+                else
+                    ind = 0;
             }
             return ret;
         }
