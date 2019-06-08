@@ -430,40 +430,25 @@ namespace apCaminhosMarte
 
         private void dgvMelhorCaminho_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            int indiceMelhorCaminho = 0;
-            for (int l = 0; l < dgvCaminhos.RowCount; ++l)
+            int indiceMelhorCaminho = 0, indice = 0;
+            var listaCidades = new List<int>();
+            for (int c = 0; c < dgvMelhorCaminho.ColumnCount; ++c)
+                listaCidades.Add(int.Parse(dgvMelhorCaminho.Rows[0].Cells[c].Value.ToString().Substring(0,2)));
+            foreach (Caminho c in possibilidades)
             {
-                bool ehOMelhor = true;
-                for (int c = 0; c < dgvCaminhos.ColumnCount; ++c)
+                bool ehOMelhor = false;
+                for (int i = 0; i < c.Rota.Count; ++i)
                 {
-                    if (l >= dgvMelhorCaminho.RowCount)
-                    {
-                        ehOMelhor = false;
+                    if (i >= listaCidades.Count ||
+                        c.Rota[i] != listaCidades[i])
                         break;
-                    }
-                    else
-                    {
-                        string cidadeCaminho = dgvCaminhos.Rows[l].Cells[c].Value == null ? "" : dgvCaminhos.Rows[l].Cells[c].Value.ToString().Substring(0, 2);
-                        string cidadeMelhorCaminho = dgvMelhorCaminho.Rows[l].Cells[c].Value == null ? "" : dgvMelhorCaminho.Rows[l].Cells[c].Value.ToString().Substring(0, 2);
-                        if ((cidadeCaminho == "") != (cidadeMelhorCaminho == ""))
-                        {
-                            ehOMelhor = false;
-                            break;
-                        }
-                        else if (cidadeCaminho == "" && cidadeMelhorCaminho == "")
-                            break;
-                        else if (int.Parse(cidadeCaminho) != int.Parse(cidadeMelhorCaminho))
-                        {
-                            ehOMelhor = false;
-                            break;
-                        }
-                    }
                 }
                 if (ehOMelhor)
                 {
-                    indiceMelhorCaminho = l;
+                    indiceMelhorCaminho = indice;
                     break;
                 }
+                ++indice;
             }
             caminhoAtual = possibilidades[indiceMelhorCaminho];
         }

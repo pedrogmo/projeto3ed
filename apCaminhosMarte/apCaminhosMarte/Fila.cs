@@ -48,24 +48,18 @@ namespace apCaminhosMarte
             return ret;
         }
 
-        public T Inicio
+        public T Inicio()
         {
-            get
-            {
-                if (EstaVazia())
-                    throw new FilaVaziaException("Fila vazia");
-                return inicio.Info;
-            }
+            if (EstaVazia())
+                throw new FilaVaziaException("Fila vazia");
+            return inicio.Info;
         }
 
-        public T Fim
+        public T Fim()
         {
-            get
-            {
-                if (EstaVazia())
-                    throw new FilaVaziaException("Fila vazia");
-                return fim.Info;
-            }
+            if (EstaVazia())
+                throw new FilaVaziaException("Fila vazia");
+            return fim.Info;
         }
     }
 }

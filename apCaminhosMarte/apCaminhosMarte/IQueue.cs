@@ -8,8 +8,8 @@ namespace apCaminhosMarte
     {
         void Enfileirar(Dado elemento);
         Dado Retirar();
-        Dado Inicio { get; }
-        Dado Fim { get; }
+        Dado Inicio();
+        Dado Fim();
         int Tamanho { get; }
         bool EstaVazia();
     }

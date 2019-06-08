@@ -57,76 +57,7 @@ namespace apCaminhosMarte
             else
                 Inserir(novoNo, raiz);
         }
-
-        /*public void Excluir(T dado)
-        {
-            if (EstaVazia)
-                throw new Exception("Árvore vazia");
-            NoArvore<T> BuscarNoAntecessor(T dadoAtual)
-            {
-                NoArvore<T> noAtual = null, anterior = null;
-                if (!EstaVazia)
-                {
-                    noAtual = raiz;
-                    while (noAtual != null && noAtual.Info.CompareTo(dado) != 0)
-                    {
-                        if (dado.CompareTo(noAtual.Info) < 0)
-                        {
-                            anterior = noAtual;
-                            noAtual = noAtual.Esquerdo;
-                        }
-                        else if (dado.CompareTo(noAtual.Info) > 0)
-                        {
-                            anterior = noAtual;
-                            noAtual = noAtual.Direito;
-                        }
-                        else
-                            return anterior;
-                    }
-                }
-                return anterior;
-            }
-
-            NoArvore<T> antecessor = BuscarNoAntecessor(dado);
-            if (antecessor != null)
-            {
-                NoArvore<T> atual = null;
-                if (antecessor.Esquerdo.Info.CompareTo(dado) == 0)
-                    atual = antecessor.Esquerdo;
-                else
-                    atual = antecessor.Direito;
-                if (atual.Esquerdo == null || atual.Direito == null)
-                {
-                    if (atual.Info.CompareTo(antecessor.Info) > 0)
-                    {
-                        if (atual.Esquerdo != null)
-                            antecessor.Direito = atual.Esquerdo;
-                        else if (atual.Direito != null)
-                            antecessor.Direito = atual.Direito;
-                        else
-                            antecessor.Direito = null;
-                    }
-                    else
-                    {
-                        if (atual.Esquerdo != null)
-                            antecessor.Esquerdo = atual.Esquerdo;
-                        else if (atual.Direito != null)
-                            antecessor.Esquerdo = atual.Direito;
-                        else
-                            antecessor.Esquerdo = null;
-                    }
-                }
-                else
-                {
-                    NoArvore<T> aux = antecessor.Esquerdo;
-                    while (aux != null && aux.Direito.Direito != null) aux = aux.Direito;
-                    T info = aux.Direito.Info;
-                    aux.Direito = null;
-                    antecessor.Info = info;
-                }
-            }
-        }*/
-       
+        
         public void Excluir(T info)
         {           
             void Excluir(ref NoArvore<T> atual)
@@ -369,35 +300,35 @@ namespace apCaminhosMarte
 
         /*protected bool DoisFilhos(NoArvore<T> atual)
         {
-           if (atual.Esquerdo != null && atual.Direito != null)
-               return DoisFilhos(atual.Esquerdo) && DoisFilhos(atual.Direito);
-           if (atual.EhFolha())
-               return true;
-           return false;
+            if (atual.Esquerdo != null && atual.Direito != null)
+                return DoisFilhos(atual.Esquerdo) && DoisFilhos(atual.Direito);
+            if (atual.EhFolha())
+                return true;
+            return false;
         }
 
         public void EscreverAntecessores(T dado)
         {
-           bool achou = false;
-           EscreverAntecessor(raiz, dado, ref achou);
-           if (!achou)
-               Console.WriteLine("Dado não foi achado");
-        }
+            T EscreverAntecessor(NoArvore<T> atual, T dado, ref bool achou)
+            {
+                if (atual != null)
+                {
+                    if (!achou)
+                        EscreverAntecessor(atual.Esquerdo, dado, ref achou);
+                    if (!achou)
+                        EscreverAntecessor(atual.Direito, dado, ref achou);
+                    if (atual.Info.CompareTo(dado) == 0)
+                        achou = true;
+                    if (achou)
+                        return atual.Info;
+                }
+                return default(T);
+            }
 
-        protected T EscreverAntecessor(NoArvore<T> atual, T dado, ref bool achou)
-        {
-           if (atual != null)
-           {
-               if (!achou)
-                   EscreverAntecessor(atual.Esquerdo, dado, ref achou);
-               if (!achou)
-                   EscreverAntecessor(atual.Direito, dado, ref achou);
-               if (atual.Info.CompareTo(dado) == 0)
-                   achou = true;
-               if (achou)
-                   return atual.Info;
-           }
-           return default(T);
+            bool achou = false;
+            EscreverAntecessor(raiz, dado, ref achou);
+            if (!achou)
+                Console.WriteLine("Dado não foi achado");
         }*/
     }
 }
