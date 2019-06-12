@@ -423,8 +423,9 @@ namespace apCaminhosMarte
                 // sleep(100);
                 SolidBrush preenchimento = new SolidBrush(Color.Blue);
                 g.FillEllipse(preenchimento, xf - 15, yf - 15, 30, 30);
-                g.DrawString(Convert.ToString(noAtual.Info.Codigo), new Font("Comic Sans", 12), new SolidBrush(Color.Yellow), xf - 15, yf - 10);
-                g.DrawString(noAtual.Info.Nome, new Font("Comic Sans", 12), new SolidBrush(Color.Black), xf - 30, yf + 10);
+                g.DrawString(Convert.ToString(noAtual.Info.Codigo), new Font("Century Gothic", 12), new SolidBrush(Color.Yellow), xf - 15, yf - 10);
+                g.DrawString(noAtual.Info.Nome, new Font("Century Gothic", 12), new SolidBrush(Color.Black), xf - 30, yf + 10);
+                //Desenha nome da cidade embaixo do código
             }
         }
 
