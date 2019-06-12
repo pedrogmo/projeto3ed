@@ -135,33 +135,33 @@ namespace apCaminhosMarte
             return MaiorNo(raiz);
         }
 
-        public void PreOrdem(Action<T> callback)
+        public void PreOrdem(Action<T> metodo)
         {
             void PreOrdem(NoArvore<T> atual)
             {
                 if (atual != null)
                 {
-                    callback(atual.Info);
+                    metodo(atual.Info);
                     PreOrdem(atual.Esquerdo);
                     PreOrdem(atual.Direito);
                 }
             }
             PreOrdem(raiz);
         }
-        public void InOrdem(Action<T> callback)
+        public void InOrdem(Action<T> metodo)
         {
             void InOrdem(NoArvore<T> atual)
             {
                 if (atual != null)
                 {
                     InOrdem(atual.Esquerdo);
-                    callback(atual.Info);
+                    metodo(atual.Info);
                     InOrdem(atual.Direito);
                 }
             }
             InOrdem(raiz);
         }
-        public void PosOrdem(Action<T> callback)
+        public void PosOrdem(Action<T> metodo)
         {
             void PosOrdem(NoArvore<T> atual)
             {
@@ -169,12 +169,12 @@ namespace apCaminhosMarte
                 {
                     PosOrdem(atual.Esquerdo);
                     PosOrdem(atual.Direito);
-                    callback(atual.Info);
+                    metodo(atual.Info);
                 }
             }
             PosOrdem(raiz);
         }
-        public void PorNivel(Action<T> callback)
+        public void PorNivel(Action<T> metodo)
         {
             Fila<NoArvore<T>> umaFila = new Fila<NoArvore<T>>();
             var noAtual = raiz;
@@ -184,7 +184,7 @@ namespace apCaminhosMarte
                     umaFila.Enfileirar(noAtual.Esquerdo);
                 if (noAtual.Direito != null)
                     umaFila.Enfileirar(noAtual.Direito);
-                callback(noAtual.Info);
+                metodo(noAtual.Info);
                 if (umaFila.EstaVazia())
                     noAtual = null;
                 else

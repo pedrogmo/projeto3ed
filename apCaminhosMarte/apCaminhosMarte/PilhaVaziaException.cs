@@ -8,6 +8,8 @@ namespace apCaminhosMarte
 {
     //Felipe Scherer Vicentin (18178)
     //Pedro Gomes Moreira (18174)
+
+    //Classe para exceção de pilha vazia, herda de Exception
     class PilhaVaziaException : Exception
     {
         public PilhaVaziaException(string msg) : base(msg)

@@ -8,11 +8,18 @@ namespace apCaminhosMarte
 {
     //Felipe Scherer Vicentin (18178)
     //Pedro Gomes Moreira (18174)
+
+    //Classe que será usada para guardar cada cidade do mapa
     public class Cidade : IComparable<Cidade>
     {
-        protected int codigo, x, y;
+        //Código da cidade
+        protected int codigo;
+        //Coordenada X e Y da cidade
+        protected int x, y;      
+        //Nome da cidade
         protected string nome;
 
+        //Constantes de começo e tamanho para cada atributo para separação de uma string
         public const int COMECO_CODIGO = 0;
         public const int TAMANHO_CODIGO = 3;
         public const int COMECO_NOME = COMECO_CODIGO + TAMANHO_CODIGO;
@@ -22,6 +29,7 @@ namespace apCaminhosMarte
         public const int COMECO_Y = COMECO_X + TAMANHO_X;
         public const int TAMANHO_Y = 5;
 
+        //Construtor completo com parâmetros para todos os atributos atributos
         public Cidade(int c, string n, int x, int y)
         {
             Codigo = c;
@@ -30,19 +38,31 @@ namespace apCaminhosMarte
             Y = y;
         }
 
+        //Construtor que recebe uma linha por parâmetro e a divide, armazenando os valores correspondentes a cada atributo
+        //Joga exceção caso haja erro de separação e conversão da string
         public Cidade(string linha)
         {
-            Codigo = int.Parse(linha.Substring(COMECO_CODIGO, TAMANHO_CODIGO).Trim());
-            Nome = linha.Substring(COMECO_NOME, TAMANHO_NOME).Trim();
-            X = int.Parse(linha.Substring(COMECO_X, TAMANHO_X).Trim());
-            Y = int.Parse(linha.Substring(COMECO_Y, TAMANHO_Y).Trim());
+            try
+            {
+                Codigo = int.Parse(linha.Substring(COMECO_CODIGO, TAMANHO_CODIGO).Trim());
+                Nome = linha.Substring(COMECO_NOME, TAMANHO_NOME).Trim();
+                X = int.Parse(linha.Substring(COMECO_X, TAMANHO_X).Trim());
+                Y = int.Parse(linha.Substring(COMECO_Y, TAMANHO_Y).Trim());
+            }
+            catch
+            {
+                throw new Exception("String da cidade inválida");
+            }
         }
 
+        //Construtor apenas com código da cidade, usado para pesquisa
         public Cidade(int codC)
         {
             Codigo = codC;
         }
 
+        //Propriedade inteira Codigo, com getter público e setter privado da classe
+        //Lança exceção se o valor for menor do que 0
         public int Codigo
         {
             get => codigo;
@@ -54,6 +74,8 @@ namespace apCaminhosMarte
             }
         }
 
+        //Propriedade string Nome, com getter público e setter privado
+        //Joga exceção se string for nula ou uma cadeia vazia
         public string Nome
         {
             get => nome;
@@ -65,6 +87,8 @@ namespace apCaminhosMarte
             }
         }
 
+        //Propriedade inteira X, com getter e setter
+        //Joga exceção de valor for menor do que 0
         public int X
         {
             get => x;
@@ -76,6 +100,8 @@ namespace apCaminhosMarte
             }
         }
 
+        //Propriedade inteira Y, com getter e setter
+        //Joga exceção de valor for menor do que 0
         public int Y
         {
             get => y;
@@ -87,11 +113,13 @@ namespace apCaminhosMarte
             }
         }   
         
+        //Método que retorna número inteiro que representa a diferença de código de this menos código de c
         public int CompareTo(Cidade c)
         {
             return codigo - c.codigo;
         }
 
+        //Método que retorna string da cidade com seu código e seu nome
         public override string ToString()
         {
             return $"{codigo} - {nome}";
