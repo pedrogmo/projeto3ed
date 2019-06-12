@@ -22,6 +22,8 @@ namespace apCaminhosMarte
         Bitmap gif;
         Color corNo = Color.Blue;
         Color corLinhaArvore = Color.Red;
+        Color corCodCidade = Color.Yellow;
+        Color corNomeCidade = Color.Black;
         Color corLinhaCidade = Color.DarkSlateGray;
         Color corCidade = Color.Black;
         Color corLinhaCaminho = Color.FromArgb(51, 77, 201); //para caminhos possíveis
@@ -403,28 +405,23 @@ namespace apCaminhosMarte
 
         private void DesenhaNoArvore(bool primeiraVez, NoArvore<Cidade> noAtual,
                    float x, float y, double angulo, double incremento,
-                   double comprimento, Graphics g)
+                   double comprimento, Graphics gfx)
         {
             float xf, yf;
             if (noAtual != null)
             {
-                Pen caneta = new Pen(Color.Red);
+                Pen caneta = new Pen(corLinhaArvore);
                 xf = (float) Math.Round(x + Math.Cos(angulo) * comprimento);
-                yf = (float) Math.Round(y + Math.Sin(angulo) * comprimento);
-                if (primeiraVez)
-                    yf = 25;
-                g.DrawLine(caneta, x, y, xf, yf);
+                yf = primeiraVez? 25 : (float) Math.Round(y + Math.Sin(angulo) * comprimento);
+                gfx.DrawLine(caneta, x, y, xf, yf);
                 var esq = noAtual.Esquerdo;
-                DesenhaNoArvore(false, esq, xf, yf, Math.PI / 2 + incremento,
-                                                 incremento * 0.60, comprimento * 0.8, g);
+                DesenhaNoArvore(false, esq, xf, yf, Math.PI / 2 + incremento, incremento * 0.60, comprimento * 0.8, gfx);
                 var dir = noAtual.Direito;
-                DesenhaNoArvore(false, dir, xf, yf, Math.PI / 2 - incremento,
-                                                  incremento * 0.60, comprimento * 0.8, g);
-                // sleep(100);
-                SolidBrush preenchimento = new SolidBrush(Color.Blue);
-                g.FillEllipse(preenchimento, xf - 15, yf - 15, 30, 30);
-                g.DrawString(Convert.ToString(noAtual.Info.Codigo), new Font("Century Gothic", 12), new SolidBrush(Color.Yellow), xf - 15, yf - 10);
-                g.DrawString(noAtual.Info.Nome, new Font("Century Gothic", 12), new SolidBrush(Color.Black), xf - 30, yf + 10);
+                DesenhaNoArvore(false, dir, xf, yf, Math.PI / 2 - incremento, incremento * 0.60, comprimento * 0.8, gfx);
+                SolidBrush preenchimento = new SolidBrush(corNo);
+                gfx.FillEllipse(preenchimento, xf - DIAMETRO_NO/2, yf - DIAMETRO_NO / 2, DIAMETRO_NO, DIAMETRO_NO);
+                gfx.DrawString(noAtual.Info.Codigo + "", new Font("Century Gothic", 12), new SolidBrush(corCodCidade), xf - (DIAMETRO_NO / 2 - 5), yf - DIAMETRO_NO / 2);
+                gfx.DrawString(noAtual.Info.Nome, new Font("Century Gothic", 12), new SolidBrush(corNomeCidade), xf - DIAMETRO_NO, yf + DIAMETRO_NO / 2);
                 //Desenha nome da cidade embaixo do código
             }
         }
