@@ -397,16 +397,16 @@ namespace apCaminhosMarte
 
         private void DesenharArvore(Graphics gfx, TabPage tpArvore, NoArvore<Cidade> raiz)
         {
-            DesenhaArvore(true, raiz, (int)tpArvore.Width / 2, 0, Math.PI / 2,
+            DesenhaNoArvore(true, raiz, (int)tpArvore.Width / 2, 0, Math.PI / 2,
                                  Math.PI / 2.5, 450, gfx);
         }
 
-        private void DesenhaArvore(bool primeiraVez, NoArvore<Cidade> raiz,
+        private void DesenhaNoArvore(bool primeiraVez, NoArvore<Cidade> noAtual,
                    float x, float y, double angulo, double incremento,
                    double comprimento, Graphics g)
         {
             float xf, yf;
-            if (raiz != null)
+            if (noAtual != null)
             {
                 Pen caneta = new Pen(Color.Red);
                 xf = (float) Math.Round(x + Math.Cos(angulo) * comprimento);
@@ -414,17 +414,17 @@ namespace apCaminhosMarte
                 if (primeiraVez)
                     yf = 25;
                 g.DrawLine(caneta, x, y, xf, yf);
-                var esq = raiz.Esquerdo;
-                DesenhaArvore(false, esq, xf, yf, Math.PI / 2 + incremento,
+                var esq = noAtual.Esquerdo;
+                DesenhaNoArvore(false, esq, xf, yf, Math.PI / 2 + incremento,
                                                  incremento * 0.60, comprimento * 0.8, g);
-                var dir = raiz.Direito;
-                DesenhaArvore(false, dir, xf, yf, Math.PI / 2 - incremento,
+                var dir = noAtual.Direito;
+                DesenhaNoArvore(false, dir, xf, yf, Math.PI / 2 - incremento,
                                                   incremento * 0.60, comprimento * 0.8, g);
                 // sleep(100);
                 SolidBrush preenchimento = new SolidBrush(Color.Blue);
                 g.FillEllipse(preenchimento, xf - 15, yf - 15, 30, 30);
-                g.DrawString(Convert.ToString(raiz.Info.Codigo), new Font("Comic Sans", 12),
-                              new SolidBrush(Color.Yellow), xf - 15, yf - 10);
+                g.DrawString(Convert.ToString(noAtual.Info.Codigo), new Font("Comic Sans", 12), new SolidBrush(Color.Yellow), xf - 15, yf - 10);
+                g.DrawString(noAtual.Info.Nome, new Font("Comic Sans", 12), new SolidBrush(Color.Black), xf - 30, yf + 10);
             }
         }
 
