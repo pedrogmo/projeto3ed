@@ -8,11 +8,11 @@ namespace apCaminhosMarte
 {
     //Felipe Scherer Vicentin (18178)
     //Pedro Gomes Moreira (18174)
-    interface IStack<Dado>
+    interface IStack<T>
     {
-        void Empilhar(Dado info);
-        Dado Desempilhar();
-        Dado Topo();
+        void Empilhar(T info);
+        T Desempilhar();
+        T Topo();
         int Tamanho { get; }
         bool EstaVazia();
     }
