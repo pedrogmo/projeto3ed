@@ -28,7 +28,7 @@ namespace apCaminhosMarte
         //Joga exceção para origem inválida
         public Caminho(int origem)
         {
-            if (origem < 1)
+            if (origem < 0)
                 throw new Exception("Origem inválida");
             distanciaTotal = 0;            
             rota = new List<int>();

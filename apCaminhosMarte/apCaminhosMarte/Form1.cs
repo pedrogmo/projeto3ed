@@ -24,10 +24,10 @@ namespace apCaminhosMarte
         Color corLinhaArvore = Color.Red;
         Color corCodCidade = Color.Yellow;
         Color corNomeCidade = Color.Black;
-        Color corLinhaCidade = Color.DarkSlateGray;
+        Color corLinhaCidade = Color.FromArgb(51, 77, 201);
         Color corCidade = Color.Black;
-        Color corLinhaCaminho = Color.FromArgb(51, 77, 201); //para caminhos possíveis
-        Color corLinhaCaminhoSelecionado = Color.Red; //para caminho selecionado        
+        Color corLinhaCaminhoSelecionado = Color.Red; //para caminho selecionado
+        const int GROSSURA_CANETA = 3;
         const int DIAMETRO_NO = 30;
         const int DIAMETRO_CIDADE = 10;
         const int LARGURA = 4096;
@@ -200,18 +200,7 @@ namespace apCaminhosMarte
                 }
             if (caminhoAtual != null)
             {
-                List<Cidade> caminho = new List<Cidade>();
-                foreach (Caminho c in possibilidades)
-                {
-                    if (c != caminhoAtual)
-                    {
-                        caminho = new List<Cidade>();
-                        foreach (int i in c.Rota)
-                            caminho.Add(arvore.Buscar(new Cidade(i)));
-                        DesenhaCaminho(gfx, caminho, false);
-                    }
-                }
-                caminho = new List<Cidade>();
+                List<Cidade> caminho = new List<Cidade>();                
                 foreach (int i in caminhoAtual.Rota)
                     caminho.Add(arvore.Buscar(new Cidade(i)));
                 DesenhaCaminho(gfx, caminho, true);
@@ -344,7 +333,7 @@ namespace apCaminhosMarte
                     double x = qtdPassos * tamanhoPasso;
                     double y = angulo * x;
                     x = b < 0 ? x * -1 : x;
-                    gfxT.DrawLine(new Pen(corLinhaCaminhoSelecionado, 3), p1, new PointF(Convert.ToSingle(x + p1.X), Convert.ToSingle(p1.Y - y)));
+                    gfxT.DrawLine(new Pen(corLinhaCaminhoSelecionado, GROSSURA_CANETA), p1, new PointF(Convert.ToSingle(x + p1.X), Convert.ToSingle(p1.Y - y)));
                     if (qtdPassos * tamanhoPasso > Math.Abs(b))
                     {
                         acabou = true;
@@ -364,7 +353,7 @@ namespace apCaminhosMarte
             int indice = 0;
             foreach (Cidade atual in caminhoAtual)
             {                
-                Pen caneta = new Pen(selecionado ? corLinhaCaminhoSelecionado : corLinhaCaminho, 3);
+                Pen caneta = new Pen(corLinhaCaminhoSelecionado, GROSSURA_CANETA);
                 if (!atual.Equals(anterior))
                 {
                     PointF p1 = new PointF(pbMapa.Size.Width * anterior.X / LARGURA, pbMapa.Size.Height * anterior.Y / ALTURA);
@@ -378,7 +367,7 @@ namespace apCaminhosMarte
                     else
                         DesenhaLinhaAnimada(gfx, caneta, p1, p2, indice);*/
 
-                    if (atual.Nome == "Gondor" && anterior.Nome == "Arrakeen") //anterior.Nome == "Senzeni Na"
+                    if (atual.Nome == "Gondor" && anterior.Nome == "Arrakeen")
                     {
                         DesenhaLinha(gfx, caneta, 0, anterior.Y + DIST_CIDADES, anterior, false);
                         DesenhaLinha(gfx, caneta, LARGURA - 1, anterior.Y + DIST_CIDADES, atual, true);
