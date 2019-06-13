@@ -25,8 +25,11 @@ namespace apCaminhosMarte
         public int DistanciaTotal { get => distanciaTotal; }
 
         //Construtor com origem, inicializa distanciaTotal para 0 e armazena origem na rota
+        //Joga exceção para origem inválida
         public Caminho(int origem)
         {
+            if (origem < 1)
+                throw new Exception("Origem inválida");
             distanciaTotal = 0;            
             rota = new List<int>();
             rota.Add(origem);
