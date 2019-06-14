@@ -157,147 +157,166 @@ namespace apCaminhosMarte
             return MaiorNo(raiz); //Chama função interna começando pela raíz
         }
 
+        //Método que executa um método passado por parâmetro em todos os valores da árvore,
+        //na ordem Raiz-Esquerdo-Direito
         public void PreOrdem(Action<T> metodo)
         {
+            //Método interno recursivo
             void PreOrdem(NoArvore<T> atual)
             {
                 if (atual != null)
                 {
-                    metodo(atual.Info);
+                    metodo(atual.Info); //Invocação do Action passado como parâmetro
                     PreOrdem(atual.Esquerdo);
                     PreOrdem(atual.Direito);
                 }
             }
-            PreOrdem(raiz);
+            PreOrdem(raiz); //Começa pela raíz
         }
 
+        //Método que executa um método passado por parâmetro em todos os valores da árvore,
+        //na ordem Esquerdo-Raíz-Direito
         public void InOrdem(Action<T> metodo)
         {
+            //Método interno recursivo
             void InOrdem(NoArvore<T> atual)
             {
                 if (atual != null)
                 {
                     InOrdem(atual.Esquerdo);
-                    metodo(atual.Info);
+                    metodo(atual.Info); //Invocação do Action passado como parâmetro
                     InOrdem(atual.Direito);
                 }
             }
-            InOrdem(raiz);
+            InOrdem(raiz); //Começa pela raíz
         }
 
+        //Método que executa um método passado por parâmetro em todos os valores da árvore,
+        //na ordem Esquerdo-Direito-Raíz
         public void PosOrdem(Action<T> metodo)
         {
+            //Método interno recursivo
             void PosOrdem(NoArvore<T> atual)
             {
                 if (atual != null)
                 {
                     PosOrdem(atual.Esquerdo);
                     PosOrdem(atual.Direito);
-                    metodo(atual.Info);
+                    metodo(atual.Info); //Invocação do Action passado como parâmetro
                 }
             }
-            PosOrdem(raiz);
+            PosOrdem(raiz); //Começa pela raíz
         }
 
+        //Realiza a busca em largura na árvore executando um método a cada nó
         public void PorNivel(Action<T> metodo)
         {
-            Fila<NoArvore<T>> umaFila = new Fila<NoArvore<T>>();
-            var noAtual = raiz;
+            Fila<NoArvore<T>> umaFila = new Fila<NoArvore<T>>(); //Fila para armazenar próximos nós
+            var noAtual = raiz; //nó para percorrer árvore
             while (noAtual != null)
             {
+                //São enfileirados os nós à esquerda e à direita do nó atual se eles não forem nulos
                 if (noAtual.Esquerdo != null)
                     umaFila.Enfileirar(noAtual.Esquerdo);
                 if (noAtual.Direito != null)
                     umaFila.Enfileirar(noAtual.Direito);
-                metodo(noAtual.Info);
+                metodo(noAtual.Info); //Execeução do Action no nó atual
                 if (umaFila.EstaVazia())
-                    noAtual = null;
+                    noAtual = null; //Se a fila está vazia, fim da execução
                 else
-                    noAtual = umaFila.Retirar();
+                    noAtual = umaFila.Retirar(); //Se não, nó atual passa a ser o primeiro da fila
             }
         }
 
+        //Busca e retorna um elemento a partir de um modelo passado
         public T Buscar(T dado)
         {
-            var noArvore = BuscarNo(dado);
-            if (noArvore != null)
+            var noArvore = BuscarNo(dado); //Busca-se o nó correspondente ao valor
+            if (noArvore != null) //Se nó não for nulo, retorna-se o seu valor 
                 return noArvore.Info;
-            return default(T);
+            return default(T); //Se o nó for nulo, é retornado um valor default da classe
         }
 
+        //Método protegido que retorna nó correspondente de um dado passado
         protected NoArvore<T> BuscarNo(T dado)
         {
             NoArvore<T> atual = null;
             if (!EstaVazia())
             {
-                atual = raiz;
-                while (atual != null)
+                atual = raiz; //Começa pela raíz
+                while (atual != null) //Enquanto atual não é nulo, percorre árvore para esquerda ou para a direita dependendo da comparação
                 {
                     if (dado.CompareTo(atual.Info) < 0)
                         atual = atual.Esquerdo;
                     else if (dado.CompareTo(atual.Info) > 0)
                         atual = atual.Direito;
                     else
-                        return atual;
+                        return atual; //Se as chaves forem iguais, retorna o nó
                 }
             }
-            return atual;
+            return atual; //Se sair do while, não achou, retornaatual, que é nulo
         }        
 
-        public int QuantidadeFolhas
+        //Retorna quantidade de folhas da árvore
+        public int QuantidadeFolhas()
         {
-            get
+            //Método recursivo de contagem
+            int ContarFolhas(NoArvore<T> atual)
             {
-                int ContarFolhas(NoArvore<T> atual)
-                {
-                    if (atual == null)
-                        return 0;
-                    if (atual.EhFolha())
-                        return 1;
-                    return ContarFolhas(atual.Esquerdo) + ContarFolhas(atual.Direito);
-                }
-                return ContarFolhas(raiz);
+                if (atual == null) //Retorna 0 se atual for nulo
+                    return 0;
+                if (atual.EhFolha()) //Retorna 1 se atual for folha
+                    return 1;
+                return ContarFolhas(atual.Esquerdo) + ContarFolhas(atual.Direito); //Retorna quantidade de folhas à esquerda + quantidade à direita
             }
+            return ContarFolhas(raiz); //Retorna quantidade de folhas a partir da raíz
         }
 
-        public int Altura
+        //Método que retorna altura da árvore
+        public int Altura()
         {
-            get
+            //Função recursiva
+            int ContarAltura(NoArvore<T> atual)
             {
-                int ContarAltura(NoArvore<T> atual)
-                {
-                    //a altura de uma árvore é a maior dentre a altura da esquerda e da direita
-                    int alturaEsquerda, alturaDireita;
-                    if (atual == null)
-                        return 0;
-                    alturaEsquerda = ContarAltura(atual.Esquerdo);
-                    alturaDireita = ContarAltura(atual.Direito);
-                    if (alturaEsquerda >= alturaDireita)
-                        return 1 + alturaEsquerda;
-                    return 1 + alturaDireita;
-                }
-                return ContarAltura(raiz);
+                //a altura de uma árvore é a maior dentre a altura da esquerda e da direita
+                int alturaEsquerda, alturaDireita;
+                if (atual == null)
+                    return 0;
+                alturaEsquerda = ContarAltura(atual.Esquerdo); //Calcula altura do nó à esquerda
+                alturaDireita = ContarAltura(atual.Direito); //Calcula altura do nó à direita
+                if (alturaEsquerda >= alturaDireita) //Retorna a maior das alturas entre esquerda e direita + 1
+                    return 1 + alturaEsquerda;
+                return 1 + alturaDireita;
             }
+            return ContarAltura(raiz); //Altura a partir da raíz
         }
 
         public override bool Equals(object obj)
         {
-            if (this == obj) return true;
-            if (obj == null) return false;
-            ArvoreBinaria<T> arvore = obj as ArvoreBinaria<T>;
-            bool ArvoreIgual(NoArvore<T> a, NoArvore<T> b)
+            if (this == obj) //Se o ponteiro dos objetos é o mesmo, retorna true
+                return true; 
+            if (obj == null) //Se obj for nulo, retorna false
+                return false;
+            ArvoreBinaria<T> arvore = obj as ArvoreBinaria<T>; //Type-cast de obj para arvore
+            //Método bool recursivo que compara todos os nós das árvore
+            bool ArvoreIgual(NoArvore<T> a, NoArvore<T> b) 
             {
-                if (a == null && b == null)
+                if (a == null && b == null) //Se ambos forem nulos, retorna true
                     return true;
-                if (a != b)
+                if ((a == null) != (b == null)) //Se um deles for nulo, retorna false
                     return false;
+                if (a.Info.CompareTo(b.Info) != 0) //Se tiverem chaves iguais, retorna false
+                    return false;
+                //Se forem iguais, repetir comparação para os filhos
                 return ArvoreIgual(a.Esquerdo, b.Esquerdo) && ArvoreIgual(a.Direito, b.Direito);
             }
-            return ArvoreIgual(raiz, arvore.raiz);
+            return ArvoreIgual(raiz, arvore.raiz); //Comparação das árvores a partir da raíz
         }
 
+        //Método que retorna string compactada com todos os nós
         public override string ToString()
         {
+            //Função recursiva que escreve nós na estrutura '(esquerdo)atual(direito)'
             string EscreverNo(NoArvore<T> atual)
             {
                 if (atual == null)
@@ -305,55 +324,7 @@ namespace apCaminhosMarte
                 else
                     return $"({EscreverNo(atual.Esquerdo)}){atual.Info.ToString()}({EscreverNo(atual.Direito)})";
             }
-            return EscreverNo(raiz);
+            return EscreverNo(raiz); //Escreve nós a partir da raíz
         }
-
-        /*public int Tamanho
-        {
-            get
-            {
-                int Contar(NoArvore<T> atual)
-                {
-                    if (atual == null)
-                        return 0;
-                    //nó raíz é tratado previamente -> préordem
-                    return 1 + Contar(atual.Esquerdo) + Contar(atual.Direito);
-                }
-                return Contar(raiz);
-            }
-        }*/
-
-        /*protected bool DoisFilhos(NoArvore<T> atual)
-        {
-            if (atual.Esquerdo != null && atual.Direito != null)
-                return DoisFilhos(atual.Esquerdo) && DoisFilhos(atual.Direito);
-            if (atual.EhFolha())
-                return true;
-            return false;
-        }
-
-        public void EscreverAntecessores(T dado)
-        {
-            T EscreverAntecessor(NoArvore<T> atual, T dado, ref bool achou)
-            {
-                if (atual != null)
-                {
-                    if (!achou)
-                        EscreverAntecessor(atual.Esquerdo, dado, ref achou);
-                    if (!achou)
-                        EscreverAntecessor(atual.Direito, dado, ref achou);
-                    if (atual.Info.CompareTo(dado) == 0)
-                        achou = true;
-                    if (achou)
-                        return atual.Info;
-                }
-                return default(T);
-            }
-
-            bool achou = false;
-            EscreverAntecessor(raiz, dado, ref achou);
-            if (!achou)
-                Console.WriteLine("Dado não foi achado");
-        }*/
     }
 }

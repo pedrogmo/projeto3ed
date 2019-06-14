@@ -63,29 +63,12 @@ namespace apCaminhosMarte
             return esquerdo == null && direito == null;
         }
 
-        //Método que retorna string no formato (esquerdo) (this) (direito)
+        //Método que retorna string no formato (esquerdo)<-(this)->(direito)
         public override string ToString()
         {
             string stringEsq = esquerdo != null ? esquerdo.Info.ToString() : "null";
             string stringDir = esquerdo != null ? direito.Info.ToString() : "null";
             return $"({stringEsq})<-({Info.ToString()})->({stringDir})";
-        }
-
-        //Operador de igualdade, retorna true se ambos forem nulos ou com conteúdo igual;
-        //false caso sejam diferentes
-        public static bool operator ==(NoArvore<T> um, NoArvore<T> outro)
-        {
-            if (um is null && outro is null)
-                return true;
-            if (um is null || outro is null)
-                return false;
-            return um.info.CompareTo(outro.info) == 0;
-        }
-
-        //Operador de não igualdade, retorna condição de igualdade trocada
-        public static bool operator !=(NoArvore<T> um, NoArvore<T> outro)
-        {
-            return !(um == outro);
-        }        
+        }     
     }
 }
