@@ -6,44 +6,55 @@ namespace apCaminhosMarte
 {
     //Felipe Scherer Vicentin (18178)
     //Pedro Gomes Moreira (18174)
+
+    //Classe árvore de busca binária para armazenamento de dados
     class ArvoreBinaria<T> where T : IComparable<T>
     {       
+        //Nó de raíz da árvore
         protected NoArvore<T> raiz;
+
+        //Quantidade de elementos armazenados
+        protected int quantidade;
+
+        //Propriedade getter de nó de raíz
         public NoArvore<T> Raiz { get => raiz; }
 
+        //Propriedade getter de atributo quantidade
+        public int Quantidade { get => quantidade; }
+
+        //Construtor padrão da classe, que define a raíz como nula
         public ArvoreBinaria()
         {
             raiz = null;
         }
 
+        //Construtor que inicializa a raíz com valor passado de parâmetro
         public ArvoreBinaria(T info)
         {
             raiz = new NoArvore<T>(info);
         }
-
-        public ArvoreBinaria(ArvoreBinaria<T> outra)
+     
+        //Método que retorna true se a raíz da árvore for nula, false caso contrário
+        public bool EstaVazia()
         {
-            raiz = outra.raiz;
-        }        
-
-        public bool EstaVazia
-        {
-            get => raiz == null;
+            return raiz == null;
         }
 
+        //Método de inserção de dado
         public void Inserir(T dado)
         {
+            //Método interno recutsivo com ponteiros do novo nó e do nó anterior
             void Inserir(NoArvore<T> novo, NoArvore<T> anterior)
             {
-                int comparacao = novo.Info.CompareTo(anterior.Info);
-                if (comparacao < 0)
+                int comparacao = novo.Info.CompareTo(anterior.Info); //Compara-se o nó com o anterior
+                if (comparacao < 0) //Se novo for menor
                 {
-                    if (anterior.Esquerdo == null)
+                    if (anterior.Esquerdo == null) //se o Esquerdo do anterior for nulo, passa a ser o novo nó
                         anterior.Esquerdo = novo;
                     else
-                        Inserir(novo, anterior.Esquerdo);
+                        Inserir(novo, anterior.Esquerdo); //Se não, chama a função recursivamente para nó esquerdo de anterior
                 }
-                else if (comparacao > 0)
+                else if (comparacao > 0) //Se novo for maior, mesmo procedimento para nó da direita
                 {
                     if (anterior.Direito == null)
                         anterior.Direito = novo;
@@ -51,15 +62,18 @@ namespace apCaminhosMarte
                         Inserir(novo, anterior.Direito);
                 }
             }
-            NoArvore<T> novoNo = new NoArvore<T>(dado);
-            if (EstaVazia)
+            NoArvore<T> novoNo = new NoArvore<T>(dado); //Instanciação de novoNo com dado passado
+            if (EstaVazia()) //Se a árvore está vazia, raiz é o novoNo
                 raiz = novoNo;
-            else
+            else //Se não, chama função recursiva a partir da raíz
                 Inserir(novoNo, raiz);
+            ++quantidade; //Incremento da quantidade
         }
         
+        //Função de exclusão de um info passado
         public void Excluir(T info)
-        {           
+        {
+            //Método interno que atualiza valor de um nó, que é passado por refereência
             void Excluir(ref NoArvore<T> atual)
             {                
                 NoArvore<T> atualAnt;
@@ -78,21 +92,23 @@ namespace apCaminhosMarte
                     else
                     {
                         atualAnt = atual; // nó a retirar
-                        if (atual.Direito == null)
-                            atual = atual.Esquerdo;
+                        if (atual.Direito == null) //Sem filho direito
+                            atual = atual.Esquerdo; //Nó atual passa a ser seu filho esquerdo, seja ele nulo ou não
                         else
-                        if (atual.Esquerdo == null)
-                            atual = atual.Direito;
+                        if (atual.Esquerdo == null) //Sem filho esquerdo
+                            atual = atual.Direito;  //Nó atual passa a ser seu filho direito, seja ele nulo ou não
                         else
                         { // pai de 2 filhos
                             var e = atual.Esquerdo;
-                            Rearranja(ref e);
+                            Rearranja(ref e); //Chama função rearranja a partir do esquerdo
                             atualAnt = null; // libera o nó excluído
                         }
                     }
                 }
 
                 void Rearranja(ref NoArvore<T> aux)
+                    //Procura o maior dos menores nós a partir do nó a ser excluído
+                    //Põe o conteúdo do maior no lugar do nó anterior ao da exclusão
                 {
                     if (aux.Direito != null)
                     {
@@ -107,32 +123,38 @@ namespace apCaminhosMarte
                     }
                 }
             }
-            Excluir(ref raiz);
+            Excluir(ref raiz); //Chama método de exclusão a partir ra raíz
+            --quantidade; //Decrementa quantidade de elementos
         }        
 
+        //Método que retorna o menor dos elementos
         public T Menor()
         {
-            if (EstaVazia)
-                throw new Exception("Árvore vazia");
+            if (EstaVazia())
+                return default(T);
+            //Função recursiva que procura o último nó à esquerda de todos
             T MenorNo(NoArvore<T> atual)
             {
                 if (atual.Esquerdo == null)
                     return atual.Info;
                 return MenorNo(atual.Esquerdo);
             }
-            return MenorNo(raiz);
+            return MenorNo(raiz); //Chama função começando pela raíz
         }
+
+        //Método que retorna o maior dos elementos
         public T Maior()
         {
-            if (EstaVazia)
-                throw new Exception("Árvore vazia");
+            if (EstaVazia())
+                return default(T);
+            //Função recursiva que procura último nó à direita de todos
             T MaiorNo(NoArvore<T> atual)
             {
                 if (atual.Direito == null)
                     return atual.Info;
                 return (MaiorNo(atual.Direito));
             }
-            return MaiorNo(raiz);
+            return MaiorNo(raiz); //Chama função interna começando pela raíz
         }
 
         public void PreOrdem(Action<T> metodo)
@@ -148,6 +170,7 @@ namespace apCaminhosMarte
             }
             PreOrdem(raiz);
         }
+
         public void InOrdem(Action<T> metodo)
         {
             void InOrdem(NoArvore<T> atual)
@@ -161,6 +184,7 @@ namespace apCaminhosMarte
             }
             InOrdem(raiz);
         }
+
         public void PosOrdem(Action<T> metodo)
         {
             void PosOrdem(NoArvore<T> atual)
@@ -174,6 +198,7 @@ namespace apCaminhosMarte
             }
             PosOrdem(raiz);
         }
+
         public void PorNivel(Action<T> metodo)
         {
             Fila<NoArvore<T>> umaFila = new Fila<NoArvore<T>>();
@@ -203,7 +228,7 @@ namespace apCaminhosMarte
         protected NoArvore<T> BuscarNo(T dado)
         {
             NoArvore<T> atual = null;
-            if (!EstaVazia)
+            if (!EstaVazia())
             {
                 atual = raiz;
                 while (atual != null)
@@ -217,22 +242,7 @@ namespace apCaminhosMarte
                 }
             }
             return atual;
-        }
-
-        public int Tamanho
-        {
-            get
-            {
-                int Contar(NoArvore<T> atual)
-                {
-                    if (atual == null)
-                        return 0;
-                    //nó raíz é tratado previamente -> préordem
-                    return 1 + Contar(atual.Esquerdo) + Contar(atual.Direito);
-                }
-                return Contar(raiz);
-            }
-        }
+        }        
 
         public int QuantidadeFolhas
         {
@@ -297,6 +307,21 @@ namespace apCaminhosMarte
             }
             return EscreverNo(raiz);
         }
+
+        /*public int Tamanho
+        {
+            get
+            {
+                int Contar(NoArvore<T> atual)
+                {
+                    if (atual == null)
+                        return 0;
+                    //nó raíz é tratado previamente -> préordem
+                    return 1 + Contar(atual.Esquerdo) + Contar(atual.Direito);
+                }
+                return Contar(raiz);
+            }
+        }*/
 
         /*protected bool DoisFilhos(NoArvore<T> atual)
         {

@@ -14,7 +14,6 @@ namespace apCaminhosMarte
     {
         #region Variáveis e Constantes
         ArvoreBinaria<Cidade> arvore;
-        int qtdCidades;
         Grafo grafo;
         List<Caminho> possibilidades;
         Caminho caminhoAtual;
@@ -46,22 +45,18 @@ namespace apCaminhosMarte
             ImageAnimator.Animate(gif, DrawFrame);
             arvore = new ArvoreBinaria<Cidade>();
             var leitorCidades = new StreamReader("../../Arquivos/CidadesMarte.txt", Encoding.UTF7);
-            while (!leitorCidades.EndOfStream)
-            {
-                arvore.Inserir(new Cidade(leitorCidades.ReadLine()));
-                ++qtdCidades;
-            }
+            while (!leitorCidades.EndOfStream)            
+                arvore.Inserir(new Cidade(leitorCidades.ReadLine()));            
             leitorCidades.Close();
-            qtdCidades = arvore.Tamanho;
 
             arvore.InOrdem((Cidade c) =>
             {
                 lsbOrigem.Items.Add(c);
                 lsbDestino.Items.Add(c);
             });
-            int[,] matriz = new int[qtdCidades, qtdCidades];
-            for (int l = 0; l < qtdCidades; ++l)
-                for (int c = 0; c < qtdCidades; ++c)
+            int[,] matriz = new int[arvore.Quantidade, arvore.Quantidade];
+            for (int l = 0; l < arvore.Quantidade; ++l)
+                for (int c = 0; c < arvore.Quantidade; ++c)
                     matriz[l, c] = 0;
             var leitorCaminhos = new StreamReader("../../Arquivos/CaminhosEntreCidadesMarte.txt");
             while (!leitorCaminhos.EndOfStream)
@@ -100,7 +95,7 @@ namespace apCaminhosMarte
                 else
                 {
                     dgvCaminhos.RowCount = possibilidades.Count;
-                    dgvCaminhos.ColumnCount = qtdCidades;
+                    dgvCaminhos.ColumnCount = arvore.Quantidade;
                     int l = 0, c = 0;
                     int maiorCaminho = 0;
                     foreach (Caminho caminho in possibilidades)
@@ -165,8 +160,8 @@ namespace apCaminhosMarte
         private void pbMapa_Paint(object sender, PaintEventArgs e)
         {
             Graphics gfx = e.Graphics;
-            for (int l = 0; l < qtdCidades; ++l)
-                for (int c = 0; c < qtdCidades; ++c)
+            for (int l = 0; l < arvore.Quantidade; ++l)
+                for (int c = 0; c < arvore.Quantidade; ++c)
                 {
                     int dist = grafo.DistanciaEntre(l, c);
                     if (dist != 0)
