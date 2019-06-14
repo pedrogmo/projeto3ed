@@ -76,50 +76,52 @@ namespace apCaminhosMarte
 
             while (!fim)
             {
-                if (cidadeAtual == destino)
+                if (cidadeAtual == destino) //Achou um caminho
                 {
-                    //Achou um caminho
+                    //Pilha inversa guarda o caminho inteiro, da origem ao destino
                     var inversa = new Pilha<int>();
-                    inversa.Empilhar(cidadeAtual);
+                    inversa.Empilhar(cidadeAtual); //Empilha destino
                     while (!pilha.EstaVazia())
-                        inversa.Empilhar(pilha.Desempilhar());
-                    int origemDaInversa = inversa.Desempilhar();
-                    pilha.Empilhar(origemDaInversa);
-                    var caminho = new Caminho(origemDaInversa);
+                        inversa.Empilhar(pilha.Desempilhar()); //Desempilha pilha na inversa
+                    int origemDaInversa = inversa.Desempilhar(); //Retira origem da inversa
+                    pilha.Empilhar(origemDaInversa); //Empilha a origem de volta na pilha
+                    var caminho = new Caminho(origemDaInversa); //Instancia um caminho com a origem
                     while (!inversa.EstaVazia())
                     {
-                        int codCidadeSaida = inversa.Desempilhar();
+                        //Desempilha uma cidade da inversa, adiciona-a no caminho e empilha-a de volta na pilha
+                        int codCidadeSaida = inversa.Desempilhar(); 
                         caminho.AdicionarARota(codCidadeSaida, matriz[caminho.Rota[caminho.Rota.Count-1] , codCidadeSaida]);
                         if (codCidadeSaida != destino)
                             pilha.Empilhar(codCidadeSaida);
                     }
-                    ret.Add(caminho);
-                    Backtracking();
+                    ret.Add(caminho); //Adiciona caminho à lista de caminhos
+                    Backtracking(); //Volta para trás para procurar outro caminho a partir de destino + 1
                 }
-                jaPassou[cidadeAtual] = true;
+                jaPassou[cidadeAtual] = true; //Adiciona cidadeAtual ao vetor de frequência
                 bool haSaida = false;
-                while (!haSaida && ind < quantidade)
+                while (!haSaida && ind < quantidade) //Percorre de ind até quantidade - 1 em busca de uma cidade
                 {
-                    if (matriz[cidadeAtual, ind] != 0 && !jaPassou[ind])
+                    if (matriz[cidadeAtual, ind] != 0 && !jaPassou[ind]) //Se existe adjacência entre cidadeAtual e ind e já não passou por ind
                     //Achou cidade para sair
                     {
-                        if (cidadeAtual == origem)
+                        if (cidadeAtual == origem) //Se a cidadeAtual é a origem, empilha-a somente se pilha estiver vazia
+                            //dessa forma, não empilha a origem duas vezes
                         {
                             if (pilha.EstaVazia())
                                 pilha.Empilhar(cidadeAtual);
                         }
                         else
-                            pilha.Empilhar(cidadeAtual);
-                        cidadeAtual = ind;
+                            pilha.Empilhar(cidadeAtual); //Empilha a cidade
+                        cidadeAtual = ind; //cidadeAtual passa para ind
                         haSaida = true;
                     }
                     ++ind;
                 }
                 if (!haSaida)
-                    //Regressivo
+                    //Se não há saída encontrada, modo regressivo - Backtracking
                     Backtracking();
                 else
-                    ind = 0;
+                    ind = 0; //Se achou saída, índice volta a ser 0 para busca a partir de 0
             }
             return ret;
         }
