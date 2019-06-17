@@ -46,7 +46,7 @@ namespace apCaminhosMarte
         const int LARGURA = 4096;
         //Altura da imagem do mapa
         const int ALTURA = 2048;
-        //
+        //é a distância para cima ou para baixo para fazer as linhas das cidades da borda
         const int DIST_CIDADES = 20;
         #endregion
 
@@ -413,30 +413,19 @@ namespace apCaminhosMarte
             }
         }
 
-        private void dgvMelhorCaminho_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void dgvMelhorCaminho_CellClick(object sender, DataGridViewCellEventArgs e) //quando o melhor caminho é escolhido como caminhoAtual
         {
-            //quando o melhor caminho é escolhido como caminhoAtual
-            int indiceMelhorCaminho = 0, indice = 0;
             var listaCidades = new List<int>(); //lista com os códigos das cidades do melhor caminho
             for (int c = 0; c < dgvMelhorCaminho.ColumnCount; ++c) //percorre todas as colunas do dgvMelhorCaminho
                 listaCidades.Add(int.Parse(dgvMelhorCaminho.Rows[0].Cells[c].Value.ToString().Substring(0,2))); //obtém o código relativo à cidade da coluna atual
             foreach (Caminho c in possibilidades) //percorre todos os caminhos nas possibilidades
             {
-                bool ehOMelhor = false;
-                for (int i = 0; i < c.Rota.Count; ++i)
+                if (c.Rota.Equals(listaCidades)) //se o caminho atual tiver a mesma rota da melhor rota, este é o melhor caminho
                 {
-                    if (i >= listaCidades.Count ||
-                        c.Rota[i] != listaCidades[i])
-                        break;
+                    caminhoAtual = c; //caminhoAtual é atualizado
+                    break; //loop termina para evitar repetições desnecessárias
                 }
-                if (ehOMelhor)
-                {
-                    indiceMelhorCaminho = indice;
-                    break;
-                }
-                ++indice;
             }
-            caminhoAtual = possibilidades[indiceMelhorCaminho];
         }
     }
 }
