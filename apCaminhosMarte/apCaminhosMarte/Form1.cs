@@ -142,7 +142,7 @@ namespace apCaminhosMarte
                     c = 0;
                     foreach (int cidade in melhor.Rota) //percorre-se o melhor caminho
                         dgvMelhorCaminho.Rows[0].Cells[c++].Value = arvore.Buscar(new Cidade(cidade)); //as cidades pelas quais ele passa são adicionadas às colunas do dgvMelhorCaminho
-                    caminhoAtual = possibilidades[0]; //caminho selecionado normalmente é o primeiro, não importa a distância
+                    dgvCaminhos.Rows[0].Selected = dgvMelhorCaminho.Rows[0].Selected = false; //a princípio, não seleciona nenhum caminho
                     MessageBox.Show("Caminhos foram encontrados, clique em algum deles para visualizar", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information); //mensagem para o usuário
                 }
             }
@@ -157,10 +157,19 @@ namespace apCaminhosMarte
         {
             int index = e.RowIndex; //quando algum caminho é selecionado
             if (index >= 0)
+            {
                 caminhoAtual = possibilidades[index]; //o caminho atual é o que acabou de ser selecionado pelo usuário
+                var listaCidades = new List<int>(); //lista com os códigos das cidades do melhor caminho
+                for (int c = 0; c < dgvMelhorCaminho.ColumnCount; ++c) //percorre todas as colunas do dgvMelhorCaminho
+                    listaCidades.Add(int.Parse(dgvMelhorCaminho.Rows[0].Cells[c].Value.ToString().Substring(0, 2))); //obtém o código relativo à cidade da coluna atual
+                if (caminhoAtual.Rota.SequenceEqual(listaCidades)) //se o caminho selecionado é o melhor, ele também é selecionado no dgvMelhorCaminho
+                    dgvMelhorCaminho.Rows[0].Selected = true;
+                else
+                    dgvMelhorCaminho.Rows[0].Selected = false; //se não, ele não é selecionado
+            }
         }
 
-        private void lsbOrigem_SelectedIndexChanged(object sender, EventArgs e)
+        private void lsb_SelectedIndexChanged(object sender, EventArgs e) //evento para ambos os listboxes
         {
             caminhoAtual = null; //quando a origem muda, tanto o caminho atual quanto as possibilidades não se aplicam mais, pois se referiam à uma rota anterior
             possibilidades = null;
@@ -416,13 +425,17 @@ namespace apCaminhosMarte
             var listaCidades = new List<int>(); //lista com os códigos das cidades do melhor caminho
             for (int c = 0; c < dgvMelhorCaminho.ColumnCount; ++c) //percorre todas as colunas do dgvMelhorCaminho
                 listaCidades.Add(int.Parse(dgvMelhorCaminho.Rows[0].Cells[c].Value.ToString().Substring(0,2))); //obtém o código relativo à cidade da coluna atual
+            int ind = 0; //índice usado para saber linha do dgvCaminhos
             foreach (Caminho c in possibilidades) //percorre todos os caminhos nas possibilidades
             {
                 if (c.Rota.SequenceEqual(listaCidades)) //se o caminho atual tiver a mesma rota da melhor rota, este é o melhor caminho
                 {
+                    dgvCaminhos.Rows[ind].Selected = true; //seleciona a linha correspondente no dgvCaminhos
                     caminhoAtual = c; //caminhoAtual é atualizado
                     break; //loop termina para evitar repetições desnecessárias
                 }
+                dgvCaminhos.Rows[ind].Selected = false; //não seleciona linha do dgvCaminhos
+                ++ind; //próxima linha
             }
         }
     }
