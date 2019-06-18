@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Drawing.Drawing2D;
+using System.Linq;
 
 namespace apCaminhosMarte
 {
@@ -417,7 +418,7 @@ namespace apCaminhosMarte
                 listaCidades.Add(int.Parse(dgvMelhorCaminho.Rows[0].Cells[c].Value.ToString().Substring(0,2))); //obtém o código relativo à cidade da coluna atual
             foreach (Caminho c in possibilidades) //percorre todos os caminhos nas possibilidades
             {
-                if (c.Rota.Equals(listaCidades)) //se o caminho atual tiver a mesma rota da melhor rota, este é o melhor caminho
+                if (c.Rota.SequenceEqual(listaCidades)) //se o caminho atual tiver a mesma rota da melhor rota, este é o melhor caminho
                 {
                     caminhoAtual = c; //caminhoAtual é atualizado
                     break; //loop termina para evitar repetições desnecessárias
