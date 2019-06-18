@@ -69,14 +69,11 @@ namespace apCaminhosMarte
 
             arvore.InOrdem((Cidade c) => //visita a árvore do modo in-ordem, ou seja, ordenada
             {
-                //adiciona cada cidade ao ListBox de cidades de orgiem e destino
+                //adiciona cada cidade ao ListBox de cidades de origem e destino
                 lsbOrigem.Items.Add(c);
                 lsbDestino.Items.Add(c);
             });
             int[,] matriz = new int[arvore.Quantidade, arvore.Quantidade]; //cria a matriz para o grafo
-            for (int l = 0; l < arvore.Quantidade; ++l)
-                for (int c = 0; c < arvore.Quantidade; ++c)
-                    matriz[l, c] = 0; //coloca 0 em todas as posições, a princípio
             var leitorCaminhos = new StreamReader("../../Arquivos/CaminhosEntreCidadesMarte.txt"); //leitor dos caminhos entre as cidades
             while (!leitorCaminhos.EndOfStream)
             {
