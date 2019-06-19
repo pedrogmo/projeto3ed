@@ -69,63 +69,52 @@ namespace apCaminhosMarte
                 Inserir(novoNo, raiz);
             ++quantidade; //Incremento da quantidade
         }
-        
-        //Função de exclusão de um info passado
-        public void Excluir(T info)
-        {
-            //Método interno que atualiza valor de um nó, que é passado por refereência
-            void Excluir(ref NoArvore<T> atual)
-            {                
-                NoArvore<T> atualAnt;
-                if (atual != null)
-                { 
-                    if (atual.Info.CompareTo(info) > 0)
-                    {
-                        var e = atual.Esquerdo;
-                        Excluir(ref e);
-                    }
-                    else if (atual.Info.CompareTo(info) < 0)
-                    {
-                        var d = atual.Direito;
-                        Excluir(ref d);
-                    }
-                    else
-                    {
-                        atualAnt = atual; // nó a retirar
-                        if (atual.Direito == null) //Sem filho direito
-                            atual = atual.Esquerdo; //Nó atual passa a ser seu filho esquerdo, seja ele nulo ou não
-                        else
-                        if (atual.Esquerdo == null) //Sem filho esquerdo
-                            atual = atual.Direito;  //Nó atual passa a ser seu filho direito, seja ele nulo ou não
-                        else
-                        { // pai de 2 filhos
-                            var e = atual.Esquerdo;
-                            Rearranja(ref e); //Chama função rearranja a partir do esquerdo
-                            atualAnt = null; // libera o nó excluído
-                        }
-                    }
-                }
 
-                void Rearranja(ref NoArvore<T> aux)
-                    //Procura o maior dos menores nós a partir do nó a ser excluído
-                    //Põe o conteúdo do maior no lugar do nó anterior ao da exclusão
+        //Função que encontra o menor nó a partir de uma determinada posição e o exclui, retornando seu valor
+        protected T MaiorExcluir(NoArvore<T> anterior, NoArvore<T> atual)
+        {
+            if (atual.Direito == null)
+            {
+                anterior.Direito = atual.Esquerdo;
+                return atual.Info;
+            }
+            return (MaiorExcluir(atual, atual.Direito));
+        }
+
+        //Função de exclusão de um info passado
+        public void Excluir(T dado)
+        {
+            void Excluir(NoArvore<T> atual, NoArvore<T> anterior)
+            {
+                int comparacao = dado.CompareTo(atual.Info); //Comparação entre dado e o ó atual
+                int comparacao2 = atual.Info.CompareTo(anterior.Info); //Comparação entre nó atual e seu antecessor
+                if (comparacao == 0) //Nó atual deve ser excluído
                 {
-                    if (aux.Direito != null)
+                    if (atual.Esquerdo != null && atual.Direito != null) //Se o nó a ser excluído tem dois filhos, troca-se o seu valor com o maior valor do nó à esquerda de atual
+                        atual.Info = MaiorExcluir(atual, atual.Esquerdo);
+                    else if (atual.Esquerdo != null) //Se há filho à esquerda, antecessor apontará para ele
                     {
-                        var d = aux.Direito;
-                        Rearranja(ref d); // Procura Maior
+                        if (comparacao2 > 0)
+                            anterior.Direito = atual.Esquerdo;
+                        else
+                            anterior.Esquerdo = atual.Esquerdo;
                     }
-                    else
-                    { // Guarda os dados do nó a excluir
-                        atualAnt.Info = aux.Info; // troca conteúdo!
-                        atualAnt = aux; // funciona com a passagem por referência
-                        aux = aux.Esquerdo;
+                    else //Se há (ou não) filho à direita, antecessor apontará para ele
+                    {
+                        if (comparacao2 > 0)
+                            anterior.Direito = atual.Direito;
+                        else
+                            anterior.Esquerdo = atual.Direito;
                     }
                 }
+                else if (comparacao > 0)
+                    Excluir(atual.Direito, atual); //repetir para nó à direita
+                else
+                    Excluir(atual.Esquerdo, atual); //repetir para nó à esquerda
             }
-            Excluir(ref raiz); //Chama método de exclusão a partir ra raíz
-            --quantidade; //Decrementa quantidade de elementos
-        }        
+            Excluir(raiz, raiz); //começa da raíz
+            --quantidade;
+        }
 
         //Método que retorna o menor dos elementos
         public T Menor()
