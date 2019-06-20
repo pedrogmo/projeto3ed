@@ -393,8 +393,8 @@ namespace apCaminhosMarte
 
         private void DesenharArvore(Graphics gfx, TabPage tpArvore, NoArvore<Cidade> raiz)
         {
-            DesenhaNoArvore(true, raiz, (int)tpArvore.Width / 2, 0, Math.PI / 2,
-                                 Math.PI / 2.5, 450, gfx);
+            DesenhaNoArvore(true, raiz, (int)tpArvore.Width / 2, 0, Math.PI / 2, //código da pública para desenhar árvore em tab page
+                                 Math.PI / 2.5, Height/3, gfx);
         }
 
         private void DesenhaNoArvore(bool primeiraVez, NoArvore<Cidade> noAtual,
@@ -415,7 +415,7 @@ namespace apCaminhosMarte
                 SolidBrush preenchimento = new SolidBrush(corNo);
                 gfx.FillEllipse(preenchimento, xf - DIAMETRO_NO/2, yf - DIAMETRO_NO / 2, DIAMETRO_NO, DIAMETRO_NO);
                 gfx.DrawString(noAtual.Info.Codigo + "", new Font("Century Gothic", 12), new SolidBrush(corCodCidade), xf - (DIAMETRO_NO / 2 - 5), yf - DIAMETRO_NO / 2);
-                gfx.DrawString(noAtual.Info.Nome, new Font("Century Gothic", 12), new SolidBrush(corNomeCidade), xf - DIAMETRO_NO, yf + DIAMETRO_NO / 2);
+                gfx.DrawString(noAtual.Info.Nome, new Font("Century Gothic", 8), new SolidBrush(corNomeCidade), xf - DIAMETRO_NO, yf + DIAMETRO_NO / 2);
                 //Desenha nome da cidade embaixo do código
             }
         }
